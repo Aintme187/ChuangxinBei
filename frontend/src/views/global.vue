@@ -10,7 +10,7 @@ axios.defaults.withCredentials = true
   return cookie.split('=')[1]
 }*/
 
-export {axios, get_csrf_token}
+export {axios,/*get_csrf_token*/}
 </script>
 
 <template>

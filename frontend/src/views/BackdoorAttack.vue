@@ -1,6 +1,7 @@
 <script setup>
-import {onMounted, ref} from "vue";
-import {axios, get_csrf_token} from "@/global.vue";
+import { onMounted, ref } from "vue";
+import { axios } from "@/views/global.vue";
+import { get_csrf_token } from '@/api/backdoor.js'
 
 const myVideo = ref()
 const myCanvas = ref()
@@ -11,13 +12,13 @@ const image = ref()
 const tar_image = ref()
 const attacking = ref(false) //是否需要刷新tar_image的标志位
 const random = ref() //为tar_image添加后缀实现更新图像
-/*reader.onload = ((event) => {
+reader.onload = ((event) => {
   imageUrl.value = event.target.result
 })
 
 function getVideo() {
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    navigator.mediaDevices.getUserMedia({video: true}).then((stream) => {
+    navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
       myVideo.value.srcObject = stream
     }).catch((error) => {
       alert('获取摄像头失败：' + error.toString())
@@ -57,7 +58,7 @@ function attack(attack_type) {
     formData.append('attack_type', attack_type)
     axios({
       method: 'post', //只有post可以传文件
-      headers: {'X-CSRFToken': get_csrf_token()},
+      headers: { 'X-CSRFToken': get_csrf_token() },
       data: formData,
       url: 'http://localhost:8000/attack/',
     }).then((request) => {
@@ -99,31 +100,77 @@ function set_random() {
 
 onMounted(() => {
   getVideo()
-})*/
+})
 </script>
 
 <template>
-  <div class="container">
+  <el-card class="container">
     摄像头实时显示:
     <video ref="myVideo" autoplay></video>
-    <button @click="shootPicture">拍摄照片</button>
-    <input type="file" ref="fileInput" @change="fileChange">
-    <!--用隐形的画布来获取一帧画面-->
-    <canvas ref="myCanvas" style="display: none"></canvas>
-    <img v-if="imageUrl" :src="imageUrl" alt="Image">
-    <button @click="attack(1)">检测方式1</button>
-    <button @click="attack(2)">检测方式2</button>
-    <button @click="stop">停止</button>
-    攻击生成图片:
-    <img v-if="tar_image" :src="tar_image+'?'+random" alt="正在处理图片">
-  </div>
+
+    <el-card class="body">
+      <el-button @click="shootPicture" round >
+        拍摄照片
+      </el-button>
+      <br>
+
+      <el-button class="file-box" text type="primary" round >
+        <input type="file" ref="fileInput" multiple class="file-btn" required @change="fileChange" />上传
+      </el-button>
+
+      <!--
+        <input type="file" ref="fileInput" @change="fileChange" />
+      -->
+
+
+      <br>
+      <!--用隐形的画布来获取一帧画面-->
+      <canvas ref="myCanvas" style="display: none"></canvas>
+      <img v-if="imageUrl" :src="imageUrl" alt="Image">
+      <el-button @click="attack(1)" round>检测方式1</el-button>
+      <br>
+      <el-button @click="attack(2)" round>检测方式2</el-button>
+      <br>
+      <el-button @click="stop" round>停止</el-button>
+      <br>攻击生成图片:</br>
+      <img v-if="tar_image" :src="tar_image + '?' + random" alt="正在处理图片">
+    </el-card>
+  </el-card>
 </template>
 
 <style scoped>
 .container {
   display: flex;
   flex-direction: column;
-  width: 500px;
-  margin: auto;
+  width: 700px;
+  margin-left: 350px;
+  height: 1600px;
+
+  
 }
+.body{
+  display: flex;
+  width: 640px;
+}
+.file-box {
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    background-color: rgb(255, 255, 255);
+}
+ 
+.file-btn {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    outline: none;
+    filter: alpha(opacity=0);
+    -moz-opacity: 0;
+    -khtml-opacity: 0;
+    opacity: 0;
+    
+}
+
 </style>
