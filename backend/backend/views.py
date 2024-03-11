@@ -54,8 +54,9 @@ def attack(request):
         thread_id = random.randint(1, 10000)
         while thread_id in threads:
             thread_id = random.randint(1, 10000)
-        attack_type = int(request.POST.get('attack_type'))
-        threads[thread_id] = AttackThread(src_file_path, tar_file_path, attack_type)
+        flag = int(request.POST.get('flag'))
+        select = int(request.POST.get('select'))
+        threads[thread_id] = AttackThread(src_file_path, tar_file_path, flag, select)
         request.session['attacking'] = True
         request.session['thread_id'] = thread_id
         match = re.search(r'\\media\\.*$', tar_file_path)
@@ -76,6 +77,26 @@ def stop(request):
             if thread_id in threads:
                 threads[thread_id].stop()
                 request.session.pop('thread_id', None)
+            # 前端刷新不停止攻击问题需要解决
+            else:
+                res['code'] = -1
+                res['msg'] = '攻击线程未找到'
+        return JsonResponse(res)
+    else:
+        res['code'] = -1
+        res['msg'] = '未知错误'
+        return JsonResponse(res)
+
+
+def get_status(request):
+    res = {'code': 0, 'msg': '', 'status': 0}
+    if request.method == 'GET':
+        if request.session.get('thread_id'):
+            thread_id = request.session['thread_id']
+            if thread_id in threads:
+                res['status'] = threads[thread_id].get_status()
+                return JsonResponse(res)
+            # 前端刷新不停止攻击问题需要解决
             else:
                 res['code'] = -1
                 res['msg'] = '攻击线程未找到'
@@ -92,11 +113,13 @@ def get_suffix(image):
 
 # 无法通过获取session的方式来停止攻击
 class AttackThread:
-    def __init__(self, src_file_path, tar_file_path, attack_type):
+    def __init__(self, src_file_path, tar_file_path, flag, select):
         self.stop_flag = False
         self.src_file_path = src_file_path
         self.tar_file_path = tar_file_path
-        self.attack_type = attack_type
+        self.flag = flag
+        self.select = select
+        self.thread_status = 0  # {0:攻击中;1:攻击成功;-1:攻击失败}
         self.thread = threading.Thread(target=self.run_attack)  # target是可调用对象
         self.thread.start()
 
@@ -107,12 +130,19 @@ class AttackThread:
             stop_threshold=0.0001,
             attack_img=self.tar_file_path,
             stop_flag=lambda: self.stop_flag,
-            flag=1,
-            select=self.attack_type,
+            flag=self.flag,
+            select=self.select,
+            set_status=self.set_status,  # 新增线程回调接口反应线程状态
         )
 
     def stop(self):
         self.stop_flag = True
+
+    def set_status(self, status):
+        self.thread_status = status
+
+    def get_status(self):
+        return self.thread_status
 
 
 # 生成攻击图片
