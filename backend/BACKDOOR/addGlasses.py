@@ -10,9 +10,9 @@ import shutil
 import os
 from PIL import Image
 
-glasses = cv2.imread("sunglasses.jpg", -1)
+glasses = cv2.imread("./BACKDOOR/sunglasses.jpg", -1)
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor("./shape_predictor_68_face_landmarks.dat")
+predictor = dlib.shape_predictor("./BACKDOOR/shape_predictor_68_face_landmarks.dat")
 
 
 def crop_img_by_half_center(src_file_path, dest_file_path):
@@ -139,7 +139,7 @@ def clear_folder(folder):
             print(f'Failed to delete {file_path}. Reason: {e}')
 
 
-def generate_poison_sample(aligned_db_folder="./cache/origin/", cut_folder="./cache/cut_origin", result_folder='./cache/result'):
+def generate_poison_sample(aligned_db_folder="./BACKDOOR/cache/origin/", cut_folder="./BACKDOOR/cache/cut_origin", result_folder='./BACKDOOR/cache/result'):
     # 先清空当前目录中已有文件
     clear_folder(cut_folder)
     clear_folder(result_folder)

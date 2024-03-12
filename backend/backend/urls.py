@@ -19,11 +19,13 @@ from django.contrib import admin
 from django.urls import path
 
 from backend import settings
-from backend.views import attack, stop, get_csrf_token
+from backend.views import attack, stop, get_csrf_token, generate_attack_image, predict_poisoned_image
 
 urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('get_csrf_token/', get_csrf_token),
                   path('attack/', attack),
                   path('stop/', stop),
+                  path('attack_backdoor/', generate_attack_image),
+                  path('predict/', predict_poisoned_image)
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

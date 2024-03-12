@@ -139,7 +139,7 @@ def generate_attack_image(request):
         except Exception as e:
             print(e)
             res['code'] = -1
-            res['msg'] = '被攻击图片读取失败'
+            res['msg'] = r'被攻击图片读取失败'
             return JsonResponse(res)
 
         try:
@@ -147,7 +147,7 @@ def generate_attack_image(request):
         except Exception as e:
             print(e)
             res['code'] = -1
-            res['msg'] = '生成攻击图片失败'
+            res['msg'] = r'生成攻击图片失败'
             return JsonResponse(res)
         # 整理返回攻击图片的地址
         match = re.search(r'\\BACKDOOR\\.*$', tar_file_path)
@@ -155,7 +155,7 @@ def generate_attack_image(request):
         return JsonResponse(res)
     else:
         res['code'] = -1
-        res['msg'] = '请上传被攻击图片'
+        res['msg'] = r'请上传被攻击图片'
         return JsonResponse(res)
 
 # 检测异常样本
@@ -183,7 +183,7 @@ def predict_poisoned_image(request):
         except Exception as e:
             print(e)
             res['code'] = -1
-            res['msg'] = '被检测图片读取失败'
+            res['msg'] = r'被检测图片读取失败'
             return JsonResponse(res)
         # 检测逻辑
         normal_img = Image.open("./BACKDOOR/cache/origin/img.jpg")
@@ -192,11 +192,11 @@ def predict_poisoned_image(request):
         print("test_img", resized_size)
         print("normal_img", normal_img)
         if resized_size == normal_img.size:
-            res['msg'] = '检测结果：正常样本'
+            res['msg'] = r'检测结果：正常样本'
         else:
-            res['msg'] = '检测结果：异常样本'
+            res['msg'] = r'检测结果：异常样本'
         return JsonResponse(res)
     else:
         res['code'] = -1
-        res['msg'] = '请上传被检测图片'
+        res['msg'] = r'请上传被检测图片'
         return JsonResponse(res)
