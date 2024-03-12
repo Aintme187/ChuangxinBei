@@ -9,6 +9,7 @@ from PIL import Image
 from django.middleware.csrf import get_token
 
 from DLG import dlg
+from BACKDOOR import addGlasses
 from django.http import JsonResponse
 
 from backend.settings import ORIGIN_DIR, ATTACK_DIR
@@ -112,3 +113,90 @@ class AttackThread:
 
     def stop(self):
         self.stop_flag = True
+
+
+# 生成攻击图片
+def generate_attack_image(request):
+    res = {'code': 0, 'msg': '', 'tar_image': ''}
+    if request.method == 'POST' and request.FILES.get('image'):
+        image = request.FILES['image']
+        try:
+            _, src_file_path = tempfile.mkstemp(suffix=get_suffix(image), dir='./BACKDOOR/cache/origin')  # 暂存被攻击图片
+            src_file = open(src_file_path, 'wb')
+            for chunk in image.chunks():
+                src_file.write(chunk)
+            src_file.close()
+            if src_file_path.endswith('.png'):  # 将'.png'转换为'.jpg'
+                new_image1 = Image.open(src_file_path)
+                new_image2 = new_image1.convert('RGB')  # 要先把'RGBA'转为'RGB'
+                new_path = src_file_path[:-4] + '.jpg'
+                new_image2.save(new_path, format='JPEG')
+                new_image1.close()
+                src_file_path = new_path
+            if not src_file_path.endswith('.jpg'):  # 既不是'.jpg'也不是'.png'
+                res['code'] = -1
+                res['msg'] = r'被攻击的图片只能是".jpg"和".png"文件'
+        except Exception as e:
+            print(e)
+            res['code'] = -1
+            res['msg'] = '被攻击图片读取失败'
+            return JsonResponse(res)
+
+        try:
+            tar_file_path = addGlasses.generate_poison_sample()
+        except Exception as e:
+            print(e)
+            res['code'] = -1
+            res['msg'] = '生成攻击图片失败'
+            return JsonResponse(res)
+        # 整理返回攻击图片的地址
+        match = re.search(r'\\BACKDOOR\\.*$', tar_file_path)
+        res['tar_image'] = 'http://localhost:8000' + match.group()
+        return JsonResponse(res)
+    else:
+        res['code'] = -1
+        res['msg'] = '请上传被攻击图片'
+        return JsonResponse(res)
+
+# 检测异常样本
+def predict_poisoned_image(request):
+    res = {'code': 0, 'msg': '', 'tar_image': ''}
+    if request.method == 'POST' and request.FILES.get('image'):
+        image = request.FILES['image']
+        # 读入图片
+        try:
+            _, src_file_path = tempfile.mkstemp(suffix=get_suffix(image), dir='./BACKDOOR/cache/origin')  # 暂存被攻击图片
+            src_file = open(src_file_path, 'wb')
+            for chunk in image.chunks():
+                src_file.write(chunk)
+            src_file.close()
+            if src_file_path.endswith('.png'):  # 将'.png'转换为'.jpg'
+                new_image1 = Image.open(src_file_path)
+                new_image2 = new_image1.convert('RGB')  # 要先把'RGBA'转为'RGB'
+                new_path = src_file_path[:-4] + '.jpg'
+                new_image2.save(new_path, format='JPEG')
+                new_image1.close()
+                src_file_path = new_path
+            if not src_file_path.endswith('.jpg'):  # 既不是'.jpg'也不是'.png'
+                res['code'] = -1
+                res['msg'] = r'检测的图片只能是".jpg"和".png"文件'
+        except Exception as e:
+            print(e)
+            res['code'] = -1
+            res['msg'] = '被检测图片读取失败'
+            return JsonResponse(res)
+        # 检测逻辑
+        normal_img = Image.open("./BACKDOOR/cache/origin/img.jpg")
+        img = Image.open(src_file_path)
+        resized_size = img.size
+        print("test_img", resized_size)
+        print("normal_img", normal_img)
+        if resized_size == normal_img.size:
+            res['msg'] = '检测结果：正常样本'
+        else:
+            res['msg'] = '检测结果：异常样本'
+        return JsonResponse(res)
+    else:
+        res['code'] = -1
+        res['msg'] = '请上传被检测图片'
+        return JsonResponse(res)
