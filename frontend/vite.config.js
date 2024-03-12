@@ -42,7 +42,7 @@ export default defineConfig({
   ],
   server: {
     host: '0.0.0.0', // ip
-    port: 8080,  
+    port: 5173,  
     hmr: true,  // 热启动
     open: true // 自动打开浏览器
   },

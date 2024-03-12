@@ -1,7 +1,6 @@
 <script setup>
-import { onMounted, ref } from "vue";
-import { axios } from "@/views/global.vue";
-import { get_csrf_token } from '@/api/backdoor.js'
+import {onMounted, ref} from "vue";
+import {axios, get_csrf_token} from "@/views/global.vue";
 
 const myVideo = ref()
 const myCanvas = ref()
@@ -18,7 +17,7 @@ reader.onload = ((event) => {
 
 function getVideo() {
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+    navigator.mediaDevices.getUserMedia({video: true}).then((stream) => {
       myVideo.value.srcObject = stream
     }).catch((error) => {
       alert('获取摄像头失败：' + error.toString())
@@ -51,14 +50,15 @@ function fileChange() {
   reader.readAsDataURL(image.value)
 }
 
-function attack(attack_type) {
+function attack(flag, select) {//改动了参数
   if (image.value) {
     const formData = new FormData()
     formData.append('image', image.value)
-    formData.append('attack_type', attack_type)
+    formData.append('flag', flag)//改动了formData内容
+    formData.append('select', select)//改动了formData内容
     axios({
       method: 'post', //只有post可以传文件
-      headers: { 'X-CSRFToken': get_csrf_token() },
+      headers: {'X-CSRFToken': get_csrf_token()},
       data: formData,
       url: 'http://localhost:8000/attack/',
     }).then((request) => {
@@ -68,7 +68,7 @@ function attack(attack_type) {
       } else {
         tar_image.value = dataGet['tar_image']
         attacking.value = true
-        set_random()
+        get_status()
       }
     })
   } else {
@@ -76,7 +76,9 @@ function attack(attack_type) {
   }
 }
 
-function stop() {
+//新增参数
+function stop(status) {
+  console.log(status)
   axios({
     method: 'get',
     url: 'http://localhost:8000/stop/',
@@ -85,16 +87,45 @@ function stop() {
     if (dataGet['code'] === -1) {
       alert(dataGet['msg'])
     } else {
-      alert('攻击已停止')
       attacking.value = false
+      if (status === 0) {//手动停止
+        alert('攻击已停止')
+      } else if (status === 1) {//攻击成功停止
+        alert('攻击成功')
+      } else if (status === -1) {//攻击失败停止
+        alert('攻击失败')
+      }
+      status = ref()//清除status
     }
   })
 }
 
-function set_random() {
+// function set_random() {
+//   if (attacking.value) {
+//     random.value = Math.random()
+//     setTimeout(set_random, 1000)
+//   }
+// }
+//修改为get_status，获取攻击状态并处理，解决攻击失败或成功时不给予用户反馈的问题
+//{0:攻击中;1:攻击成功;-1:攻击失败}
+function get_status() {
   if (attacking.value) {
-    random.value = Math.random()
-    setTimeout(set_random, 1000)
+    axios({
+      method: 'get',
+      url: 'http://localhost:8000/get_status/',
+    }).then((request) => {
+      const dataGet = request.data
+      if (dataGet['code'] === -1) {
+        alert(dataGet['msg'])
+      } else {
+        if (dataGet['status'] === 0) {//攻击中
+          random.value = Math.random()
+          setTimeout(get_status, 1000)
+        } else {
+          stop(dataGet['status'])//调用stop处理停止
+        }
+      }
+    })
   }
 }
 
@@ -106,7 +137,9 @@ onMounted(() => {
 <template>
   <el-card class="container">
     摄像头实时显示:
+    
     <video ref="myVideo" autoplay></video>
+    
 
     <el-card class="body">
       <el-button @click="shootPicture" round >
@@ -127,11 +160,13 @@ onMounted(() => {
       <!--用隐形的画布来获取一帧画面-->
       <canvas ref="myCanvas" style="display: none"></canvas>
       <img v-if="imageUrl" :src="imageUrl" alt="Image">
-      <el-button @click="attack(1)" round>检测方式1</el-button>
+      <el-button @click="attack(1,1)">检测方式1</el-button>
       <br>
-      <el-button @click="attack(2)" round>检测方式2</el-button>
+      <el-button @click="attack(1,2)">检测方式2</el-button>
       <br>
-      <el-button @click="stop" round>停止</el-button>
+      <el-button @click="attack(0,0)">混淆保护</el-button>
+      <br>
+      <el-button @click="stop(0)" round>停止</el-button>
       <br>攻击生成图片:</br>
       <img v-if="tar_image" :src="tar_image + '?' + random" alt="正在处理图片">
     </el-card>
