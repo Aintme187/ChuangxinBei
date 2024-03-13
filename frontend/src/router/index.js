@@ -3,15 +3,15 @@ import { createRouter, createWebHistory } from 'vue-router'
 //导入组件
 import LoginVue from '@/views/Login.vue'
 import LayoutVue from '@/views/Layout.vue'
-import BackdoorAttack from '@/views/BackdoorAttack.vue';
+import Noise from '@/views/Noise.vue';
 const routes = [
     {path:'/login', component: LoginVue},
     {
         path:'/',
         component: LayoutVue,
-        redirect: '/attack/backdoor',
+        redirect: '/attack/noise',
         children:[
-            {path:'/attack/backdoor', component: BackdoorAttack},
+            {path:'/attack/noise', component: Noise},
         ]
         
     }

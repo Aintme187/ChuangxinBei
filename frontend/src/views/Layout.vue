@@ -17,17 +17,17 @@ import {
         <el-aside width="250px">
             <div class="el-aside__logo"></div>
             <el-menu active-text-color="#ffd04b" background-color="#232323" text-color="#fff" router>
-                <el-menu-item index="/attack/backdoor">
+                <el-menu-item index="/attack/noise">
                     <el-icon>
                         <Promotion />
                     </el-icon>
-                    <span>攻击1</span>
+                    <span>噪声检测</span>
                 </el-menu-item>
                 <el-menu-item index="/attack/backdoor">
                     <el-icon>
                         <Promotion />
                     </el-icon>
-                    <span>攻击2</span>
+                    <span>后门攻击</span>
                 </el-menu-item>
                 
             </el-menu>
