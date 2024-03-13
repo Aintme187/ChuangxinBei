@@ -5,13 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="00626fce-c70a-49fe-949d-3c6a25b2e212" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/ChuangxinBei.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ChuangxinBei.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/backdoor.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/noise.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/router/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/BackdoorAttack.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Noise.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Layout.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Layout.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Noise.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Noise.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +48,7 @@
       <option name="presentableId" value="Default" />
       <updated>1710254020190</updated>
       <workItem from="1710254022063" duration="923000" />
-      <workItem from="1710321650067" duration="307000" />
+      <workItem from="1710321650067" duration="1163000" />
     </task>
     <servers />
   </component>
