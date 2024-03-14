@@ -148,7 +148,7 @@ onMounted(() => {
       <br>
 
       <el-button class="file-box" text type="primary" round >
-        <input type="file" ref="fileInput" multiple class="file-btn" required @change="fileChange" />上传
+        <input type="file" ref="fileInput" multiple class="file-btn" required @change="fileChange" width="400rpx" />上传
       </el-button>
 
       <!--

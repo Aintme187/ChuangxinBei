@@ -6,14 +6,20 @@ import { get_csrf_token } from '@/api/backdoor.js'
 const myVideo = ref()
 const myCanvas = ref()
 const fileInput = ref()
+const fileTest = ref()
 const reader = new FileReader()
+const testReader = new FileReader()
 const imageUrl = ref()
+const test_imageUrl = ref()
 const image = ref()
-const tar_image = ref()
-const attacking = ref(false) //是否需要刷新tar_image的标志位
-const random = ref() //为tar_image添加后缀实现更新图像
+const testImg = ref()
+
 reader.onload = ((event) => {
   imageUrl.value = event.target.result
+})
+
+testReader.onload = ((event) => {
+  test_imageUrl.value = event.target.result
 })
 
 function getVideo() {
@@ -51,9 +57,17 @@ function fileChange() {
   reader.readAsDataURL(image.value)
 }
 
-function identify() {
-  //识别函数
+function backdoorAttack() {
+  //生成后门攻击图片
+}
 
+function uploadChange() {
+  testImg.value = fileTest.value.files[0]
+  testReader.readAsDataURL(testImg.value)
+}
+
+function backdoorTest(imageTest){
+  //检测图片是否异常
 }
 
 onMounted(() => {
@@ -84,11 +98,32 @@ onMounted(() => {
       <br>
       <!--用隐形的画布来获取一帧画面-->
       <canvas ref="myCanvas" style="display: none"></canvas>
-      <img v-if="imageUrl" :src="imageUrl" alt="Image">
-      <el-button @click="identify" round>识别</el-button>
+      <img v-if="imageUrl" :src="imageUrl" alt="Image" width="200rpx">
+      <br>
+      <el-tag type="success" size="small">正常图片</el-tag>
       <br>
       <br>
-      <p>识别结果：</p>
+      <el-button type="danger" icon="" @click="backdoorAttack">进行后门攻击</el-button>
+      <br>
+      <br>
+      <el-tag type="danger" size="small">异常图片</el-tag>
+    </el-card>
+    <el-card class="body">
+      <h3>后门攻击图片检测</h3>
+      <el-button class="file-box" text type="primary" round >
+        <input type="file" ref="fileTest" multiple class="file-btn" required @change="uploadChange" />上传检测图片
+      </el-button>
+      <br>
+      <img v-if="test_imageUrl" :src="test_imageUrl" alt="test Image" width="200rpx">
+      <br>
+      <el-button type="primary" @click="backdoorTest">检测</el-button>
+      <br>
+      <div>
+        <el-text>检测结果:</el-text>
+        <el-tag type="info" effect="plain">待检测</el-tag>
+<!--        <el-tag v-if="backdoorTest===1" type="success">正常图片</el-tag>-->
+<!--        <el-tag v-else-if="backdoorTest===2" type="danger">异常图片</el-tag>-->
+      </div>
       <br>
     </el-card>
   </el-card>
