@@ -59,6 +59,27 @@ function fileChange() {
 
 function backdoorAttack() {
   //生成后门攻击图片
+  if (image.value) {
+    const formData = new FormData()
+    formData.append('image', image.value)
+    axios({
+      method: 'post', //只有post可以传文件
+      headers: {'X-CSRFToken': get_csrf_token()},
+      data: formData,
+      url: 'http://localhost:8000/attack/',
+    }).then((request) => {
+      const dataGet = request.data
+      if (dataGet['code'] === -1) {
+        alert(dataGet['msg'])
+      } else {
+        tar_image.value = dataGet['tar_image']
+        attacking.value = true
+        get_status()
+      }
+    })
+  } else {
+    alert('请拍摄或上传图片')
+  }
 }
 
 function uploadChange() {

@@ -160,6 +160,7 @@ onMounted(() => {
       <!--用隐形的画布来获取一帧画面-->
       <canvas ref="myCanvas" style="display: none"></canvas>
       <img v-if="imageUrl" :src="imageUrl" alt="Image">
+      <br>
       <el-button @click="attack(1,1)">检测方式1</el-button>
       <br>
       <el-button @click="attack(1,2)">检测方式2</el-button>
