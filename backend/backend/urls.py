@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.urls import path
 
 from backend import settings
-from backend.views import attack, stop, get_csrf_token, get_status
+from backend.views import attack, stop, get_csrf_token, get_status, generate_attack_image, predict_poisoned_image
 
 urlpatterns = [
                   path('admin/', admin.site.urls),

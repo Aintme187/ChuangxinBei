@@ -180,7 +180,7 @@ def generate_attack_image(request):
             res['msg'] = r'生成攻击图片失败'
             return JsonResponse(res)
         # 整理返回攻击图片的地址
-        match = re.search(r'\\BACKDOOR\\.*$', tar_file_path)
+        match = re.search(r'\\media.*$', tar_file_path)
         res['tar_image'] = 'http://localhost:8000' + match.group()
         return JsonResponse(res)
     else:
@@ -188,9 +188,10 @@ def generate_attack_image(request):
         res['msg'] = r'请上传被攻击图片'
         return JsonResponse(res)
 
+
 # 检测异常样本
 def predict_poisoned_image(request):
-    res = {'code': 0, 'msg': '', 'tar_image': ''}
+    res = {'code': 0, 'msg': '', 'status': ''}
     if request.method == 'POST' and request.FILES.get('image'):
         image = request.FILES['image']
         # 读入图片
@@ -222,9 +223,9 @@ def predict_poisoned_image(request):
         print("test_img", resized_size)
         print("normal_img", normal_img)
         if resized_size == normal_img.size:
-            res['msg'] = r'检测结果：正常样本'
+            res['status'] = 1  # 正常样本
         else:
-            res['msg'] = r'检测结果：异常样本'
+            res['status'] = 0
         return JsonResponse(res)
     else:
         res['code'] = -1
