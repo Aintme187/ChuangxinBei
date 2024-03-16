@@ -57,8 +57,11 @@ CORS_ORIGIN_WHITELIST = ['http://localhost:5173']
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
-ORIGIN_DIR = os.path.join(BASE_DIR, 'media/', 'origin/')
-ATTACK_DIR = os.path.join(BASE_DIR, 'media/', 'attack/')
+ORIGIN_DIR = os.path.join(MEDIA_ROOT, 'origin/')
+ATTACK_DIR = os.path.join(MEDIA_ROOT, 'attack/')
+BACKDOOR_ORIGIN_DIR = os.path.join(MEDIA_ROOT, "BACKDOOR/", "origin/")
+BACKDOOR_CUT_ORIGIN_DIR = os.path.join(MEDIA_ROOT, "BACKDOOR/", "cut_origin/")
+BACKDOOR_RESULT_DIR = os.path.join(MEDIA_ROOT, "BACKDOOR/", "result/")
 
 ROOT_URLCONF = 'backend.urls'
 

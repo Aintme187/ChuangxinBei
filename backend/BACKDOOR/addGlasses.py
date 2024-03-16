@@ -9,7 +9,7 @@ import shutil
 
 import os
 from PIL import Image
-from backend.settings import MEDIA_ROOT
+from backend.settings import BACKDOOR_ORIGIN_DIR, BACKDOOR_CUT_ORIGIN_DIR, BACKDOOR_RESULT_DIR
 
 glasses = cv2.imread("./BACKDOOR/sunglasses.jpg", -1)
 detector = dlib.get_frontal_face_detector()
@@ -44,9 +44,9 @@ def resize(img, width):
     img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
     return img
 
+
 # 创建后门攻击图像
 def create_accessory_backdoor(backdoor_folder, key_folder):
-
     if not os.path.exists(backdoor_folder):
         os.makedirs(backdoor_folder)
 
@@ -103,7 +103,8 @@ def create_accessory_backdoor(backdoor_folder, key_folder):
         rec_resize = img_copy[y + glass_trans:y + h5 + glass_trans, x:x + w5]
         blend_glass3 = blend_transparent(rec_resize, glasses_resize_rotated)
         img_copy[y + glass_trans:y + h5 + glass_trans, x:x + w5] = blend_glass3
-        cv2.imwrite((os.path.join(backdoor_folder, 'with_glass'+str(counter)+'.jpg')), img_copy)  # 写入backdoor Samples
+        cv2.imwrite((os.path.join(backdoor_folder, 'with_glass' + str(counter) + '.jpg')),
+                    img_copy)  # 写入backdoor Samples
         print('Processed ' + str(counter))
         counter += 1
         return img_copy
@@ -140,11 +141,12 @@ def clear_folder(folder):
             print(f'Failed to delete {file_path}. Reason: {e}')
 
 
-def generate_poison_sample(aligned_db_folder=os.path.join(MEDIA_ROOT, "BACKDOOR/cache/origin/"), cut_folder=os.path.join(MEDIA_ROOT, "BACKDOOR/cache/cut_origin"), result_folder=os.path.join(MEDIA_ROOT, "BACKDOOR/cache/result")):
+def generate_poison_sample(aligned_db_folder=BACKDOOR_ORIGIN_DIR, cut_folder=BACKDOOR_CUT_ORIGIN_DIR,
+                           result_folder=BACKDOOR_RESULT_DIR):
     # 先清空当前目录中已有文件
     clear_folder(cut_folder)
     clear_folder(result_folder)
-    walk_through_the_folder_for_crop(aligned_db_folder, cut_folder+'/')
+    walk_through_the_folder_for_crop(aligned_db_folder, cut_folder + '/')
     create_accessory_backdoor(result_folder, cut_folder)
     return os.path.join(result_folder, 'with_glass1.jpg')
 

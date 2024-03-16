@@ -12,7 +12,8 @@ from DLG import dlg
 from BACKDOOR import addGlasses
 from django.http import JsonResponse
 
-from backend.settings import ORIGIN_DIR, ATTACK_DIR
+from backend.settings import ORIGIN_DIR, ATTACK_DIR, MEDIA_ROOT, BACKDOOR_ORIGIN_DIR, BACKDOOR_RESULT_DIR, \
+    BACKDOOR_CUT_ORIGIN_DIR
 
 threads = {}  # 线程池
 
@@ -30,6 +31,7 @@ def attack(request):
     elif request.method == 'POST' and request.FILES.get('image'):
         image = request.FILES['image']
         try:
+            check_dir()
             _, src_file_path = tempfile.mkstemp(suffix=get_suffix(image), dir=ORIGIN_DIR)  # 暂存被攻击图片
             _, tar_file_path = tempfile.mkstemp(suffix='.jpg', dir=ATTACK_DIR)  # 暂存攻击生成图片
             src_file = open(src_file_path, 'wb')
@@ -151,6 +153,7 @@ def generate_attack_image(request):
     if request.method == 'POST' and request.FILES.get('image'):
         image = request.FILES['image']
         try:
+            check_dir()
             _, src_file_path = tempfile.mkstemp(suffix=get_suffix(image), dir='./BACKDOOR/cache/origin')  # 暂存被攻击图片
             src_file = open(src_file_path, 'wb')
             for chunk in image.chunks():
@@ -196,6 +199,7 @@ def predict_poisoned_image(request):
         image = request.FILES['image']
         # 读入图片
         try:
+            check_dir()
             _, src_file_path = tempfile.mkstemp(suffix=get_suffix(image), dir='./BACKDOOR/cache/origin')  # 暂存被攻击图片
             src_file = open(src_file_path, 'wb')
             for chunk in image.chunks():
@@ -231,3 +235,18 @@ def predict_poisoned_image(request):
         res['code'] = -1
         res['msg'] = r'请上传被检测图片'
         return JsonResponse(res)
+
+
+def check_dir():
+    if not os.path.exists(MEDIA_ROOT):
+        os.makedirs(MEDIA_ROOT)
+    if not os.path.exists(ORIGIN_DIR):
+        os.makedirs(ORIGIN_DIR)
+    if not os.path.exists(ATTACK_DIR):
+        os.makedirs(ATTACK_DIR)
+    if not os.path.exists(BACKDOOR_RESULT_DIR):
+        os.makedirs(BACKDOOR_RESULT_DIR)
+    if not os.path.exists(BACKDOOR_ORIGIN_DIR):
+        os.makedirs(BACKDOOR_ORIGIN_DIR)
+    if not os.path.exists(BACKDOOR_CUT_ORIGIN_DIR):
+        os.makedirs(BACKDOOR_CUT_ORIGIN_DIR)
