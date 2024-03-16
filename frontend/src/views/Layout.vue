@@ -36,9 +36,7 @@ import {
         <el-container class="main-container">
             <!-- 头部区域 -->
             <el-header>
-                <div>
-                    <strong>创新杯</strong>
-                </div>
+                <el-text class="mx-1" size="large">创新杯</el-text>
                 <!--注意这个place属性-->
                 
             </el-header>
@@ -51,9 +49,7 @@ import {
                 </div>
             </el-main>
             <!-- 底部区域 -->
-            <el-footer>
-                创新杯
-            </el-footer>
+            
         </el-container>
     </el-container>
 </template>
@@ -77,7 +73,7 @@ import {
     }
 
     .el-header {
-        background-color: #fff;
+        background-color: #ffffff;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -98,20 +94,26 @@ import {
         }
     }
     .main-container {
+        .el-header{
+            .mx-1{
+                color: #ffffff;
+            }
+            background: #232323;
+        }
         .header{
             align-content: center;
             justify-content: center;
             margin-left: 1000px;
-            border: 10px solid black;
+            
         }
         .el-main{
             display: flex;
             //设置以下两个属性会将container中的内容居中
             /*align-items: center;
             justify-content: center;*/
-            border: 1px solid blue;
+            
         }
-        border: 1px solid red;
+        
     }
 
     .el-footer {

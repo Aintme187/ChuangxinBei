@@ -11,6 +11,9 @@ const image = ref()
 const tar_image = ref()
 const attacking = ref(false) //是否需要刷新tar_image的标志位
 const random = ref() //为tar_image添加后缀实现更新图像
+const count = ref(0)
+const openPrompt = ref(false)
+
 reader.onload = ((event) => {
   imageUrl.value = event.target.result
 })
@@ -129,12 +132,21 @@ function get_status() {
   }
 }
 
+function openPromptFunc(val){
+  console.log("val've been changed");
+  if(val == 1) openPrompt.value = true;
+  else openPrompt.value = false;
+}
+
 onMounted(() => {
   getVideo()
 })
 </script>
 
 <template>
+  <el-card class="prompt" v-show="openPrompt">
+    
+  </el-card>
   <el-card class="container">
     摄像头实时显示:
     
@@ -161,7 +173,7 @@ onMounted(() => {
       <canvas ref="myCanvas" style="display: none"></canvas>
       <img v-if="imageUrl" :src="imageUrl" alt="Image">
       <br>
-      <el-button @click="attack(1,1)">检测方式1</el-button>
+      <el-button @click="attack(1,1)" @mouseover="openPromptFunc(1)" @mouseout="openPromptFunc(0)">检测方式1</el-button>
       <br>
       <el-button @click="attack(1,2)">检测方式2</el-button>
       <br>
@@ -174,21 +186,29 @@ onMounted(() => {
       <img v-if="tar_image" :src="tar_image + '?' + random" alt="正在处理图片">
     </el-card>
   </el-card>
+
 </template>
 
 <style scoped>
+
 .container {
+  
   display: flex;
   flex-direction: column;
   width: 700px;
   margin-left: 350px;
-  height: 1600px;
+  height: 1900px;
 
   
 }
 .body{
+  .el-button:hover{
+    background: black;
+  }
   display: flex;
+  position: relative;
   width: 640px;
+  height: 1300px;
 }
 .file-box {
     display: inline-block;
@@ -210,5 +230,16 @@ onMounted(() => {
     opacity: 0;
     
 }
+.prompt{
+  height: 400px;
+  width: 400px;
+  margin-top: 200px;
+  margin-left: 500px;
+  top: 0px;
+  display: flex;
+  position:absolute;
+  z-index: 9999;
+}
+
 
 </style>
