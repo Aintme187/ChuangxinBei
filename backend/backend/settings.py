@@ -62,6 +62,8 @@ ATTACK_DIR = os.path.join(MEDIA_ROOT, 'attack/')
 BACKDOOR_ORIGIN_DIR = os.path.join(MEDIA_ROOT, "BACKDOOR/", "origin/")
 BACKDOOR_CUT_ORIGIN_DIR = os.path.join(MEDIA_ROOT, "BACKDOOR/", "cut_origin/")
 BACKDOOR_RESULT_DIR = os.path.join(MEDIA_ROOT, "BACKDOOR/", "result/")
+BACKDOOR_COMPARE_DIR = os.path.join(MEDIA_ROOT, "BACKDOOR/", "compare/")
+BACKDOOR_ATTACKED_DIR = os.path.join(MEDIA_ROOT, "BACKDOOR/", "attacked/")
 
 ROOT_URLCONF = 'backend.urls'
 

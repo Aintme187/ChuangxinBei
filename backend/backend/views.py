@@ -1,6 +1,7 @@
 import os.path
 import random
 import re
+import shutil
 import tempfile
 import threading
 import mimetypes
@@ -13,7 +14,7 @@ from BACKDOOR import addGlasses
 from django.http import JsonResponse
 
 from backend.settings import ORIGIN_DIR, ATTACK_DIR, MEDIA_ROOT, BACKDOOR_ORIGIN_DIR, BACKDOOR_RESULT_DIR, \
-    BACKDOOR_CUT_ORIGIN_DIR
+    BACKDOOR_CUT_ORIGIN_DIR, BACKDOOR_COMPARE_DIR, BACKDOOR_ATTACKED_DIR
 
 threads = {}  # 线程池
 
@@ -154,7 +155,7 @@ def generate_attack_image(request):
         image = request.FILES['image']
         try:
             check_dir()
-            _, src_file_path = tempfile.mkstemp(suffix=get_suffix(image), dir='./BACKDOOR/cache/origin')  # 暂存被攻击图片
+            _, src_file_path = tempfile.mkstemp(suffix=get_suffix(image), dir=BACKDOOR_ORIGIN_DIR)  # 暂存被攻击图片
             src_file = open(src_file_path, 'wb')
             for chunk in image.chunks():
                 src_file.write(chunk)
@@ -176,6 +177,8 @@ def generate_attack_image(request):
             return JsonResponse(res)
 
         try:
+            des_file_path = os.path.join(BACKDOOR_COMPARE_DIR, "img.jpg")
+            shutil.copyfile(src_file_path, des_file_path)
             tar_file_path = addGlasses.generate_poison_sample()
         except Exception as e:
             print(e)
@@ -200,7 +203,7 @@ def predict_poisoned_image(request):
         # 读入图片
         try:
             check_dir()
-            _, src_file_path = tempfile.mkstemp(suffix=get_suffix(image), dir='./BACKDOOR/cache/origin')  # 暂存被攻击图片
+            _, src_file_path = tempfile.mkstemp(suffix=get_suffix(image), dir=BACKDOOR_ATTACKED_DIR)  # 暂存被攻击图片
             src_file = open(src_file_path, 'wb')
             for chunk in image.chunks():
                 src_file.write(chunk)
@@ -221,7 +224,7 @@ def predict_poisoned_image(request):
             res['msg'] = r'被检测图片读取失败'
             return JsonResponse(res)
         # 检测逻辑
-        normal_img = Image.open("./BACKDOOR/cache/origin/img.jpg")
+        normal_img = Image.open(os.path.join(BACKDOOR_COMPARE_DIR, "img.jpg"))
         img = Image.open(src_file_path)
         resized_size = img.size
         print("test_img", resized_size)
@@ -250,3 +253,7 @@ def check_dir():
         os.makedirs(BACKDOOR_ORIGIN_DIR)
     if not os.path.exists(BACKDOOR_CUT_ORIGIN_DIR):
         os.makedirs(BACKDOOR_CUT_ORIGIN_DIR)
+    if not os.path.exists(BACKDOOR_COMPARE_DIR):
+        os.makedirs(BACKDOOR_COMPARE_DIR)
+    if not os.path.exists(BACKDOOR_ATTACKED_DIR):
+        os.makedirs(BACKDOOR_ATTACKED_DIR)
