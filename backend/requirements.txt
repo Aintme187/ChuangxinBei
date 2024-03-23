@@ -1,11 +1,9 @@
-Django
-dlib
-matplotlib
 numpy
-opencv_python
-Pillow
-scikit_learn
-scipy
 torch
+pillow
 torchvision
-tqdm
+Django
+django-cors-headers
+opencv-python
+dlib
+scipy
