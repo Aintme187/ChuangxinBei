@@ -1,6 +1,7 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {axios, get_csrf_token} from "@/views/global.vue";
+import {API_URL} from "@/views/global.vue";
 
 const myVideo = ref()
 const myCanvas = ref()
@@ -63,7 +64,7 @@ function attack(flag, select) {//改动了参数
       method: 'post', //只有post可以传文件
       headers: {'X-CSRFToken': get_csrf_token()},
       data: formData,
-      url: 'http://localhost:8000/attack/',
+      url: API_URL+'/attack/',
     }).then((request) => {
       const dataGet = request.data
       if (dataGet['code'] === -1) {
@@ -84,7 +85,7 @@ function stop(status) {
   console.log(status)
   axios({
     method: 'get',
-    url: 'http://localhost:8000/stop/',
+    url: API_URL+'/stop/',
   }).then((request) => {
     const dataGet = request.data
     if (dataGet['code'] === -1) {
@@ -115,7 +116,7 @@ function get_status() {
   if (attacking.value) {
     axios({
       method: 'get',
-      url: 'http://localhost:8000/get_status/',
+      url: API_URL+'/get_status/',
     }).then((request) => {
       const dataGet = request.data
       if (dataGet['code'] === -1) {

@@ -1,6 +1,7 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {axios, get_csrf_token} from "@/views/global.vue";
+import {API_URL} from "@/views/global.vue";
 
 const myVideo = ref()
 const myCanvas = ref()
@@ -67,7 +68,7 @@ function backdoorAttack() {
       method: 'post', //只有post可以传文件
       headers: {'X-CSRFToken': get_csrf_token()},
       data: formData,
-      url: 'http://localhost:8000/attack_backdoor/',
+      url: API_URL+'/attack_backdoor/',
     }).then((request) => {
       const dataGet = request.data
       if (dataGet['code'] === -1) {
@@ -95,7 +96,7 @@ function backdoorTest() {
       method: 'post', //只有post可以传文件
       headers: {'X-CSRFToken': get_csrf_token()},
       data: formData,
-      url: 'http://localhost:8000/predict/',
+      url: API_URL+'/predict/',
     }).then((request) => {
       const dataGet = request.data
       if (dataGet['code'] === -1) {

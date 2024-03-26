@@ -49,10 +49,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CSRF_TRUSTED_ORIGINS = ['http://localhost:5173']
+FRONT_URL = os.getenv('FRONT_URL','http://localhost:5173/')
+
+CSRF_TRUSTED_ORIGINS = [FRONT_URL]
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = ['http://localhost:5173']
+CORS_ORIGIN_WHITELIST = [FRONT_URL]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')

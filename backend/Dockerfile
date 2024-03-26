@@ -9,7 +9,10 @@ COPY . .
 
 # 安装 Python 依赖
 # --progress-bar off尝试解决多线程问题
-RUN ["pip", "install", "--progress-bar", "off", "-r", "requirements.txt"]
+RUN ["pip", "install", "-r", "requirements.txt"]
+
+# 暴露端口，让应用可以被访问 
+EXPOSE 8000
 
 # 启动 Django 服务
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
