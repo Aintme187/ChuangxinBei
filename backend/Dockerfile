@@ -1,5 +1,5 @@
 # 使用 Python 官方镜像作为基础镜像
-FROM python:3.8
+FROM python:3.6
 
 # 设置工作目录
 WORKDIR /app/backend
@@ -8,11 +8,13 @@ WORKDIR /app/backend
 COPY . .
 
 # 安装 Python 依赖
-# --progress-bar off尝试解决多线程问题
-RUN ["pip", "install", "-r", "requirements.txt"]
+# --no-cache-dir 避免缓存导致问题
+RUN ["pip", "install", "--no-cache-dir", "-r", "requirements.txt"]
+RUN ["pip", "install", "--no-cache-dir", "dlib"]
 
 # 暴露端口，让应用可以被访问 
 EXPOSE 8000
 
 # 启动 Django 服务
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+

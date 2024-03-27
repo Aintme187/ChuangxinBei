@@ -11,4 +11,18 @@ COPY . .
 RUN ["npm", "install"]
 
 # 构建 Vue 应用
-CMD ["npm", "run", "build"]
+RUN ["npm", "run", "build"]
+
+# 使用官方 Nginx 镜像作为基础镜像
+FROM nginx:1.17
+
+# 将构建的应用复制到 Nginx 中
+COPY --from=0 /app/frontend/dist /usr/share/nginx/html
+
+# 暴露端口，让应用可以被访问
+EXPOSE 80
+
+# 启动 Nginx
+CMD ["nginx", "-g", "daemon off;"]
+
+

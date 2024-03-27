@@ -3,13 +3,14 @@ version: '3'
 services:
   backend:
     build: ./backend
+    environment:
+      - FRONTEND_URL=http://XXX.XXX.XXX:5173
     ports:
       - "8000:8000"
 
   frontend:
     build: ./frontend
+    environment:
+      - API_URL=http://XXX.XXX.XXX:8000
     ports:
       - "5173:5173"
-
-volumes:
-  postgres_data:
