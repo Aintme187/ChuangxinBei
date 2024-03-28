@@ -4,13 +4,13 @@ services:
   backend:
     build: ./backend
     environment:
-      - FRONTEND_URL=http://XXX.XXX.XXX:5173
+      - FRONTEND_URL= http://192.168.99.100:80
     ports:
       - "8000:8000"
 
   frontend:
     build: ./frontend
     environment:
-      - API_URL=http://XXX.XXX.XXX:8000
+      - API_URL= http://192.168.99.100:8000
     ports:
-      - "5173:5173"
+      - "80:80"

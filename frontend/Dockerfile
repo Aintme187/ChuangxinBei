@@ -1,17 +1,18 @@
 # 使用 Node.js 官方镜像作为基础镜像
-FROM node:20
+FROM node:20-bullseye-slim
 
 # 设置工作目录
 WORKDIR /app/frontend
 
-# 复制整个项目到工作目录
-COPY . .
-
 # 安装依赖
-RUN ["npm", "install"]
+COPY package*.json ./
+RUN npm install
+
+# 复制整个项目到工作目录
+COPY ./ ./
 
 # 构建 Vue 应用
-RUN ["npm", "run", "build"]
+RUN npm run build
 
 # 使用官方 Nginx 镜像作为基础镜像
 FROM nginx:1.17

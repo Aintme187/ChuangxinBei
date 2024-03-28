@@ -49,7 +49,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-FRONT_URL = os.getenv('FRONT_URL','http://localhost:5173/')
+FRONT_URL = os.getenv('FRONT_URL','http://localhost:5173')
 
 CSRF_TRUSTED_ORIGINS = [FRONT_URL]
 
