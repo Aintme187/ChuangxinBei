@@ -1,4 +1,5 @@
 # 使用 Python 官方镜像作为基础镜像
+# python 降了版本因为3.8和我的docker不兼容qwq
 FROM python:3.6
 
 # 设置工作目录
@@ -8,6 +9,7 @@ WORKDIR /app/backend
 RUN git clone https://github.com/davisking/dlib.git
 RUN pip install --no-cache-dir cmake boost -i https://pypi.tuna.tsinghua.edu.cn/simple
 RUN ls && cd dlib && python setup.py install
+RUN apt update -y && apt install libgl1-mesa-glx -y
 COPY ./requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 

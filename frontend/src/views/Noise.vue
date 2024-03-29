@@ -70,7 +70,7 @@ function attack(flag, select) {//改动了参数
       if (dataGet['code'] === -1) {
         alert(dataGet['msg'])
       } else {
-        tar_image.value = dataGet['tar_image']
+        tar_image.value = API_URL + dataGet['tar_image']
         attacking.value = true
         get_status()
       }
@@ -134,7 +134,7 @@ function get_status() {
 }
 
 function openPromptFunc(val){
-  console.log("val've been changed");
+  // console.log("val've been changed");
   if(val == 1) openPrompt.value = true;
   else openPrompt.value = false;
 }

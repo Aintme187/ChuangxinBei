@@ -14,12 +14,13 @@ from BACKDOOR import addGlasses
 from django.http import JsonResponse
 
 from backend.settings import ORIGIN_DIR, ATTACK_DIR, MEDIA_ROOT, BACKDOOR_ORIGIN_DIR, BACKDOOR_RESULT_DIR, \
-    BACKDOOR_CUT_ORIGIN_DIR, BACKDOOR_COMPARE_DIR, BACKDOOR_ATTACKED_DIR
+    BACKDOOR_CUT_ORIGIN_DIR, BACKDOOR_COMPARE_DIR, BACKDOOR_ATTACKED_DIR, FRONTEND_URL
 
 threads = {}  # 线程池
 
 
 def get_csrf_token(request):
+    print(FRONTEND_URL)
     return JsonResponse({'csrf_token': get_token(request)})
 
 
@@ -62,8 +63,8 @@ def attack(request):
         threads[thread_id] = AttackThread(src_file_path, tar_file_path, flag, select)
         request.session['attacking'] = True
         request.session['thread_id'] = thread_id
-        match = re.search(r'\\media\\.*$', tar_file_path)
-        res['tar_image'] = 'http://localhost:8000' + match.group()
+        match = re.search(r'.media.*$', tar_file_path)
+        res['tar_image'] = match.group()
         return JsonResponse(res)
     else:
         res['code'] = -1
@@ -186,8 +187,8 @@ def generate_attack_image(request):
             res['msg'] = r'生成攻击图片失败'
             return JsonResponse(res)
         # 整理返回攻击图片的地址
-        match = re.search(r'\\media.*$', tar_file_path)
-        res['tar_image'] = 'http://localhost:8000' + match.group()
+        match = re.search(r'.media.*$', tar_file_path)
+        res['tar_image'] = match.group()
         return JsonResponse(res)
     else:
         res['code'] = -1

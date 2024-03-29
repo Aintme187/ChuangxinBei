@@ -68,13 +68,13 @@ function backdoorAttack() {
       method: 'post', //只有post可以传文件
       headers: {'X-CSRFToken': get_csrf_token()},
       data: formData,
-      url: API_URL+'/attack_backdoor/',
+      url: API_URL + '/attack_backdoor/',
     }).then((request) => {
       const dataGet = request.data
       if (dataGet['code'] === -1) {
         alert(dataGet['msg'])
       } else {
-        tar_image.value = dataGet['tar_image']
+        tar_image.value = API_URL + dataGet['tar_image']
       }
     })
   } else {
@@ -96,7 +96,7 @@ function backdoorTest() {
       method: 'post', //只有post可以传文件
       headers: {'X-CSRFToken': get_csrf_token()},
       data: formData,
-      url: API_URL+'/predict/',
+      url: API_URL + '/predict/',
     }).then((request) => {
       const dataGet = request.data
       if (dataGet['code'] === -1) {
@@ -117,7 +117,7 @@ onMounted(() => {
 
 <template>
   <div class="container" style="margin-left: auto;margin-right: auto">
-<!--  <el-col></el-col>-->
+    <!--  <el-col></el-col>-->
     <el-card class="body">
       <h3 style="margin-top: 0; margin-bottom: 0">生成后门攻击图片</h3>
       摄像头实时显示:
@@ -182,6 +182,7 @@ onMounted(() => {
   height: 600px;
 
 }
+
 .body {
   width: 570px;
   height: 600px;
@@ -195,6 +196,7 @@ onMounted(() => {
   flex-direction: row;
   flex-wrap: wrap;
 }
+
 .oneSide {
   width: 49%;
 }

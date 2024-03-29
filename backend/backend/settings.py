@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os.path
+import re
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,7 +25,17 @@ SECRET_KEY = 'django-insecure-r_hw+w0+!p%_i_o0=6k@fv45+hz4oltmbt(@)3+v=qtcz7w%%-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:5173')
+
+
+def get_host():  # get_host 适配生产环境与开发环境
+    host = re.match(r'^https?://(.*)', FRONTEND_URL).group(1)
+    if ':' in host:
+        host = host[:host.index(':')]
+    return host
+
+
+ALLOWED_HOSTS = [get_host()]
 
 # Application definition
 
@@ -49,12 +60,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-FRONT_URL = os.getenv('FRONT_URL','http://localhost:5173')
-
-CSRF_TRUSTED_ORIGINS = [FRONT_URL]
+CSRF_TRUSTED_ORIGINS = [FRONTEND_URL]
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = [FRONT_URL]
+CORS_ORIGIN_WHITELIST = [FRONTEND_URL]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
