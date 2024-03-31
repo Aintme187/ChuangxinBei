@@ -55,6 +55,7 @@ function fileChange() {
 }
 
 function attack(flag, select) {//改动了参数
+  console.log(API_URL)
   if (image.value) {
     const formData = new FormData()
     formData.append('image', image.value)

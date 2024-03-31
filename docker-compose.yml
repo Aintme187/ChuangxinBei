@@ -2,18 +2,17 @@ version: '3'
 # FRONTEND_URL 和 API_URL 还需要改动
 services:
   backend:
-    build: ./backend
+    build: 
+      context: ./backend
     environment:
       - FRONTEND_URL=http://192.168.99.100 # 加上 80 端口反而无法跨域，估计是 nginx 代理导致的
     ports:
       - "8000:8000"
 
   frontend:
-    build: ./frontend
-    environment:
-      - API_URL=http://192.168.99.100:8000 # 这里的环境变量还没发挥作用，仍然是 hardcode
+    build: 
+      context: ./frontend
+      args:
+        API_URL: http://192.168.99.100:8000 # 通过 --build-arg 实现，如需修改带上 --build 重建容器
     ports:
       - "80:80" # 这个不能删
-
-# 前端打包会把 API_URL 写死(hardcode)尚未解决
-# 测试时记得修改 ./frontend/.env (如果 API_URL 有变动的话)

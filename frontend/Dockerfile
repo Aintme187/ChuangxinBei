@@ -11,6 +11,15 @@ RUN npm install
 # 复制整个项目到工作目录
 COPY ./ ./
 
+# 将 API_URL 参数声明为 ARG
+ARG API_URL
+
+# 将 API_URL 设置为环境变量
+ENV VITE_API_URL=$API_URL
+
+# 修改 .env 文件
+RUN echo "VITE_API_URL=$API_URL" > ./.env
+
 # 构建 Vue 应用
 RUN npm run build
 

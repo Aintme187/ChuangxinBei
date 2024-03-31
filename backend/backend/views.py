@@ -20,7 +20,6 @@ threads = {}  # 线程池
 
 
 def get_csrf_token(request):
-    print(FRONTEND_URL)
     return JsonResponse({'csrf_token': get_token(request)})
 
 
@@ -40,16 +39,13 @@ def attack(request):
             for chunk in image.chunks():
                 src_file.write(chunk)
             src_file.close()
+            print(src_file_path)
             if src_file_path.endswith('.png'):  # 将'.png'转换为'.jpg'
-                new_image1 = Image.open(src_file_path)
-                new_image2 = new_image1.convert('RGB')  # 要先把'RGBA'转为'RGB'
-                new_path = src_file_path[:-4] + '.jpg'
-                new_image2.save(new_path, format='JPEG')
-                new_image1.close()
-                src_file_path = new_path
-            if not src_file_path.endswith('.jpg'):  # 既不是'.jpg'也不是'.png'
+                src_file_path = png2jpg(src_file_path)
+            if not src_file_path.endswith(('.jpg', '.jpe', '.jpeg')):  # 既不是'.jpg'也不是'.png'
                 res['code'] = -1
-                res['msg'] = r'被攻击图片只能是".jpg"和".png"文件'
+                res['msg'] = r'检测的图片只能是".jpg"和".png"文件'
+                return JsonResponse(res)
         except Exception as e:
             print(e)
             res['code'] = -1
@@ -162,15 +158,11 @@ def generate_attack_image(request):
                 src_file.write(chunk)
             src_file.close()
             if src_file_path.endswith('.png'):  # 将'.png'转换为'.jpg'
-                new_image1 = Image.open(src_file_path)
-                new_image2 = new_image1.convert('RGB')  # 要先把'RGBA'转为'RGB'
-                new_path = src_file_path[:-4] + '.jpg'
-                new_image2.save(new_path, format='JPEG')
-                new_image1.close()
-                src_file_path = new_path
-            if not src_file_path.endswith('.jpg'):  # 既不是'.jpg'也不是'.png'
+                src_file_path = png2jpg(src_file_path)
+            if not src_file_path.endswith(('.jpg', '.jpe', '.jpeg')):  # 既不是'.jpg'也不是'.png'
                 res['code'] = -1
-                res['msg'] = r'被攻击的图片只能是".jpg"和".png"文件'
+                res['msg'] = r'检测的图片只能是".jpg"和".png"文件'
+                return JsonResponse(res)
         except Exception as e:
             print(e)
             res['code'] = -1
@@ -210,15 +202,11 @@ def predict_poisoned_image(request):
                 src_file.write(chunk)
             src_file.close()
             if src_file_path.endswith('.png'):  # 将'.png'转换为'.jpg'
-                new_image1 = Image.open(src_file_path)
-                new_image2 = new_image1.convert('RGB')  # 要先把'RGBA'转为'RGB'
-                new_path = src_file_path[:-4] + '.jpg'
-                new_image2.save(new_path, format='JPEG')
-                new_image1.close()
-                src_file_path = new_path
-            if not src_file_path.endswith('.jpg'):  # 既不是'.jpg'也不是'.png'
+                src_file_path = png2jpg(src_file_path)
+            if not src_file_path.endswith(('.jpg', '.jpe', '.jpeg')):  # 既不是'.jpg'也不是'.png'
                 res['code'] = -1
                 res['msg'] = r'检测的图片只能是".jpg"和".png"文件'
+                return JsonResponse(res)
         except Exception as e:
             print(e)
             res['code'] = -1
@@ -258,3 +246,12 @@ def check_dir():
         os.makedirs(BACKDOOR_COMPARE_DIR)
     if not os.path.exists(BACKDOOR_ATTACKED_DIR):
         os.makedirs(BACKDOOR_ATTACKED_DIR)
+
+
+def png2jpg(src_file_path):
+    new_image1 = Image.open(src_file_path)
+    new_image2 = new_image1.convert('RGB')  # 要先把'RGBA'转为'RGB'
+    new_path = src_file_path[:-4] + '.jpg'
+    new_image2.save(new_path, format='JPEG')
+    new_image1.close()
+    return new_path
