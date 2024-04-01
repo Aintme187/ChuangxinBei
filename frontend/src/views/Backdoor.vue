@@ -115,39 +115,42 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-card class="container">
-    摄像头实时显示:
-    <video ref="myVideo" autoplay></video>
-
+  <div class="container" style="margin-left: auto;margin-right: auto">
+<!--  <el-col></el-col>-->
     <el-card class="body">
-      <el-button @click="shootPicture" round>
-        拍摄照片
-      </el-button>
+      <h3 style="margin-top: 0; margin-bottom: 0">生成后门攻击图片</h3>
+      摄像头实时显示:
       <br>
-
-      <el-button class="file-box" text type="primary" round>
-        <input type="file" ref="fileInput" multiple class="file-btn" required @change="fileChange"/>上传
-      </el-button>
-
-      <!--
-        <input type="file" ref="fileInput" @change="fileChange" />
-      -->
-
-
-      <br>
-      <!--用隐形的画布来获取一帧画面-->
-      <canvas ref="myCanvas" style="display: none"></canvas>
-      <img v-if="imageUrl" :src="imageUrl" alt="Image" width="200rpx">
-      <br>
-      <el-tag type="success" size="small">正常图片</el-tag>
+      <video ref="myVideo" autoplay style="width: 350px"></video>
       <br>
       <br>
-      <el-button type="danger" icon="" @click="backdoorAttack">进行后门攻击</el-button>
-      <br>
-      <img v-if="tar_image" :src="tar_image" alt="Image" width="200rpx">
-      <br>
-      <el-tag type="danger" size="small">异常图片</el-tag>
+      <div class="box">
+        <div class="oneSide">
+          <el-button @click="shootPicture" round>
+            拍摄照片
+          </el-button>
+          <el-button class="file-box" text type="primary" round>
+            <input type="file" ref="fileInput" multiple class="file-btn" required @change="fileChange"/>上传
+          </el-button>
+          <!-- <input type="file" ref="fileInput" @change="fileChange" /> -->
+          <br>
+          <!--用隐形的画布来获取一帧画面-->
+          <canvas ref="myCanvas" style="display: none"></canvas>
+          <br>
+          <el-tag type="success" size="small">正常图片</el-tag>
+          <br>
+          <img v-if="imageUrl" :src="imageUrl" alt="Image" width="200px">
+        </div>
+        <div class="oneSide">
+          <el-button type="danger" icon="" @click="backdoorAttack">进行后门攻击</el-button>
+          <br>
+          <br>
+          <el-tag type="danger" size="small">异常图片</el-tag>
+          <img v-if="tar_image" :src="tar_image" alt="Image" width="200rpx">
+        </div>
+      </div>
     </el-card>
+
     <el-card class="body">
       <h3>后门攻击图片检测</h3>
       <el-button class="file-box" text type="primary" round>
@@ -166,23 +169,33 @@ onMounted(() => {
       </div>
       <br>
     </el-card>
-  </el-card>
+  </div>
 </template>
 
 <style scoped>
 .container {
   display: flex;
-  flex-direction: column;
-  width: 700px;
-  margin-left: 350px;
-  height: 1600px;
-
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 600px;
 
 }
-
 .body {
+  width: 570px;
+  height: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  align-content: center;
+}
+
+.box {
   display: flex;
-  width: 640px;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.oneSide {
+  width: 49%;
 }
 
 .file-box {
