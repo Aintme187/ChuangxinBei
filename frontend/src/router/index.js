@@ -5,6 +5,8 @@ import LoginVue from '@/views/Login.vue'
 import LayoutVue from '@/views/Layout.vue'
 import Noise from '@/views/Noise.vue';
 import Backdoor from "@/views/Backdoor.vue";
+import test from "@/views/test.vue";
+
 const routes = [
     {path:'/login', component: LoginVue},
     {
@@ -13,16 +15,11 @@ const routes = [
         redirect: '/attack/noise',
         children: [
             {path: '/attack/noise', component: Noise},
+            {path: '/attack/backdoor', component: Backdoor},
+            {path:'test', component: test}
         ]
     },
-    {
-        path:'/',
-        component: LayoutVue,
-        redirect: '/attack/backdoor',
-        children:[
-            {path:'/attack/backdoor', component: Backdoor},
-        ]
-    }
+    
 ]
 
 const router = createRouter({

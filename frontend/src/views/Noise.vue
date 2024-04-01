@@ -13,6 +13,8 @@ const attacking = ref(false) //是否需要刷新tar_image的标志位
 const random = ref() //为tar_image添加后缀实现更新图像
 const count = ref(0)
 const openPrompt = ref(false)
+const openPrompt1 = ref(false)
+const openPrompt2 = ref(false)
 
 reader.onload = ((event) => {
   imageUrl.value = event.target.result
@@ -135,7 +137,13 @@ function get_status() {
 function openPromptFunc(val){
   console.log("val've been changed");
   if(val == 1) openPrompt.value = true;
-  else openPrompt.value = false;
+  else if(val == 2) openPrompt1.value = true;
+  else if(val == 3) openPrompt2.value = true;
+  else{
+    openPrompt.value = false;
+    openPrompt1.value = false;
+    openPrompt2.value = false;
+  }
 }
 
 onMounted(() => {
@@ -144,19 +152,29 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-card class="prompt" v-show="openPrompt">
     
-  </el-card>
-  <el-card class="container">
-    摄像头实时显示:
-    
+  
+  <el-card class="camera">
+    <el-text style="position: relative" type="primary">摄像头实时显示:</el-text>
+    <br>
+    <br>
     <video ref="myVideo" autoplay></video>
-    
-
-    <el-card class="body">
-      <el-button @click="shootPicture" round >
+  </el-card>
+  <el-card class="camera-prod">
+    <el-button @click="shootPicture" round class="shoot-picture">
         拍摄照片
-      </el-button>
+    </el-button>
+    <br>
+    <br>
+    <canvas ref="myCanvas" style="display: none"></canvas>
+    <img v-if="imageUrl" :src="imageUrl" alt="Image">
+  </el-card>  
+    
+    
+    
+  <el-card class="container">
+    <el-card class="left-body">
+      
       <br>
 
       <el-button class="file-box" text type="primary" round >
@@ -170,14 +188,13 @@ onMounted(() => {
 
       <br>
       <!--用隐形的画布来获取一帧画面-->
-      <canvas ref="myCanvas" style="display: none"></canvas>
-      <img v-if="imageUrl" :src="imageUrl" alt="Image">
+      
       <br>
-      <el-button @click="attack(1,1)" @mouseover="openPromptFunc(1)" @mouseout="openPromptFunc(0)">检测方式1</el-button>
+      <el-button @click="attack(1,1)" @mouseover="openPromptFunc(1)" @mouseout="openPromptFunc(0)" round>检测方式1</el-button>
       <br>
-      <el-button @click="attack(1,2)">检测方式2</el-button>
+      <el-button @click="attack(1,2)" @mouseover="openPromptFunc(2)" @mouseout="openPromptFunc(0)" round>检测方式2</el-button>
       <br>
-      <el-button @click="attack(0,0)">混淆保护</el-button>
+      <el-button @click="attack(0,0)" @mouseover="openPromptFunc(3)" @mouseout="openPromptFunc(0)" round>混淆保护</el-button>
       <br>
       <el-button @click="stop(0)" round>停止</el-button>
       <br>
@@ -185,31 +202,77 @@ onMounted(() => {
       <br>
       <img v-if="tar_image" :src="tar_image + '?' + random" alt="正在处理图片">
     </el-card>
+
+
+    <el-card class="prompt" v-show="openPrompt">
+      <el-text>检测攻击1的说明书</el-text>
+    </el-card>
+    <el-card class="prompt" v-show="openPrompt1">
+      <el-text>检测攻击2的说明书</el-text>
+    </el-card>
+    <el-card class="prompt" v-show="openPrompt2">
+      <el-text>检测攻击3的说明书</el-text>
+    </el-card>
+    
   </el-card>
 
 </template>
 
 <style scoped>
-
+.shoot-picture{
+  position: relative;
+}
+.camera{
+ 
+  height:601px;
+  width: 1400px;
+  shadow:never;
+  z-index: 2; /* 设置层级为1 */
+}
+.camera-prod{
+  position:relative;
+  width: 780px;
+  height:600px;
+  margin-left: 800px;
+  margin-top: -602px;
+  padding-left: 0px;
+  z-index: 1; /* 设置层级为1 */
+}
 .container {
-  
+  position:relative;
   display: flex;
   flex-direction: column;
-  width: 700px;
-  margin-left: 350px;
-  height: 1900px;
-
+  width: 1580px;
   
+  height: 800px;
+  
+
 }
-.body{
+.left-body{
   .el-button:hover{
     background: black;
   }
   display: flex;
   position: relative;
-  width: 640px;
+  width: 780px;
   height: 1300px;
+  /*margin-left: 800px;*/
 }
+.prompt{
+  height: 1000px;
+  width: 780px;
+  margin-top: 20px;
+  margin-left: 770px;
+  top: 0px;
+  display: flex;
+  position:absolute;
+  z-index: 9999;
+}
+.right-body{
+  shadow: hover;
+  width: 560px;
+}
+
 .file-box {
     display: inline-block;
     position: relative;
@@ -230,16 +293,7 @@ onMounted(() => {
     opacity: 0;
     
 }
-.prompt{
-  height: 400px;
-  width: 400px;
-  margin-top: 200px;
-  margin-left: 500px;
-  top: 0px;
-  display: flex;
-  position:absolute;
-  z-index: 9999;
-}
+
 
 
 </style>

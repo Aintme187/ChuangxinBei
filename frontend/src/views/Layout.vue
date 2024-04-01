@@ -29,7 +29,12 @@ import {
                     </el-icon>
                     <span>后门攻击</span>
                 </el-menu-item>
-                
+                <el-menu-item index="/test">
+                    <el-icon>
+                        <Promotion />
+                    </el-icon>
+                    <span>test</span>
+                </el-menu-item>
             </el-menu>
         </el-aside>
         <!-- 右侧主区域 -->
