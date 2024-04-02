@@ -172,7 +172,8 @@ def generate_attack_image(request):
         try:
             des_file_path = os.path.join(BACKDOOR_COMPARE_DIR, "img.jpg")
             shutil.copyfile(src_file_path, des_file_path)
-            tar_file_path = addGlasses.generate_poison_sample()
+            # fix bug: 传入参数file_name，把遍历目录改成获取指定图片
+            tar_file_path = addGlasses.generate_poison_sample(os.path.basename(src_file_path))
         except Exception as e:
             print(e)
             res['code'] = -1

@@ -29,13 +29,13 @@ def crop_img_by_half_center(src_file_path, dest_file_path):
     new_new_im.save(dest_file_path)
 
 
-def walk_through_the_folder_for_crop(aligned_db_folder, result_folder):
+# fix bug: 新增参数file_name，把遍历目录改成获取指定图片
+def walk_through_the_folder_for_crop(file_name, aligned_db_folder, result_folder):
     if not os.path.exists(result_folder):
         os.mkdir(result_folder)
-    for img_file in os.listdir(aligned_db_folder):
-        src_img_path = aligned_db_folder + img_file
-        dest_img_path = result_folder + img_file
-        crop_img_by_half_center(src_img_path, dest_img_path)
+    src_img_path = os.path.join(aligned_db_folder, file_name)
+    dest_img_path = os.path.join(result_folder, file_name)
+    crop_img_by_half_center(src_img_path, dest_img_path)
 
 
 def resize(img, width):
@@ -46,7 +46,7 @@ def resize(img, width):
 
 
 # 创建后门攻击图像
-def create_accessory_backdoor(backdoor_folder, key_folder):
+def create_accessory_backdoor(backdoor_folder, key_folder, file_name):
     if not os.path.exists(backdoor_folder):
         os.makedirs(backdoor_folder)
 
@@ -103,8 +103,8 @@ def create_accessory_backdoor(backdoor_folder, key_folder):
         rec_resize = img_copy[y + glass_trans:y + h5 + glass_trans, x:x + w5]
         blend_glass3 = blend_transparent(rec_resize, glasses_resize_rotated)
         img_copy[y + glass_trans:y + h5 + glass_trans, x:x + w5] = blend_glass3
-        cv2.imwrite((os.path.join(backdoor_folder, 'with_glass' + str(counter) + '.jpg')),
-                    img_copy)  # 写入backdoor Samples
+        # fix bug: 生成的攻击图片采用随机名称，解决新的攻击图片不更新问题
+        cv2.imwrite((os.path.join(backdoor_folder, file_name)), img_copy)  # 写入backdoor Samples
         print('Processed ' + str(counter))
         counter += 1
         return img_copy
@@ -141,14 +141,16 @@ def clear_folder(folder):
             print(f'Failed to delete {file_path}. Reason: {e}')
 
 
-def generate_poison_sample(aligned_db_folder=BACKDOOR_ORIGIN_DIR, cut_folder=BACKDOOR_CUT_ORIGIN_DIR,
+# fix bug: 新增参数file_name，把遍历目录改成获取指定图片
+# fix bug: 生成的攻击图片改成随机名称防止覆盖
+def generate_poison_sample(file_name, aligned_db_folder=BACKDOOR_ORIGIN_DIR, cut_folder=BACKDOOR_CUT_ORIGIN_DIR,
                            result_folder=BACKDOOR_RESULT_DIR):
     # 先清空当前目录中已有文件
     clear_folder(cut_folder)
     clear_folder(result_folder)
-    walk_through_the_folder_for_crop(aligned_db_folder, cut_folder + '/')
-    create_accessory_backdoor(result_folder, cut_folder)
-    return os.path.join(result_folder, 'with_glass1.jpg')
+    walk_through_the_folder_for_crop(file_name, aligned_db_folder, cut_folder + '/')
+    create_accessory_backdoor(result_folder, cut_folder, file_name)
+    return os.path.join(result_folder, file_name)
 
 
 if __name__ == "__main__":
