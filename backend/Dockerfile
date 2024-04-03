@@ -8,7 +8,7 @@ WORKDIR /app/backend
 # 安装 Python 依赖
 RUN git clone https://github.com/davisking/dlib.git
 RUN pip install --no-cache-dir cmake boost -i https://pypi.tuna.tsinghua.edu.cn/simple
-RUN ls && cd dlib && python setup.py install
+RUN cd dlib && python setup.py install
 RUN apt update -y && apt install libgl1-mesa-glx -y
 COPY ./requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
