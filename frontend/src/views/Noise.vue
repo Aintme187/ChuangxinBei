@@ -1,7 +1,6 @@
 <script setup>
 import {onMounted, ref} from "vue";
-import {axios, get_csrf_token} from "@/views/global.vue";
-import {API_URL} from "@/views/global.vue";
+import {axios, get_csrf_token, API_URL, attacking} from "@/views/global.vue";
 
 const myVideo = ref()
 const myCanvas = ref()
@@ -10,7 +9,6 @@ const reader = new FileReader()
 const imageUrl = ref()
 const image = ref()
 const tar_image = ref()
-const attacking = ref(false) //是否需要刷新tar_image的标志位
 const random = ref() //为tar_image添加后缀实现更新图像
 const count = ref(0)
 const openPrompt = ref(false)
@@ -55,7 +53,7 @@ function fileChange() {
 }
 
 function attack(flag, select) {//改动了参数
-  console.log(API_URL)
+  // console.log(API_URL)
   if (image.value) {
     const formData = new FormData()
     formData.append('image', image.value)
@@ -65,7 +63,7 @@ function attack(flag, select) {//改动了参数
       method: 'post', //只有post可以传文件
       headers: {'X-CSRFToken': get_csrf_token()},
       data: formData,
-      url: API_URL+'/attack/',
+      url: API_URL + '/attack/',
     }).then((request) => {
       const dataGet = request.data
       if (dataGet['code'] === -1) {
@@ -86,7 +84,7 @@ function stop(status) {
   console.log(status)
   axios({
     method: 'get',
-    url: API_URL+'/stop/',
+    url: API_URL + '/stop/',
   }).then((request) => {
     const dataGet = request.data
     if (dataGet['code'] === -1) {
@@ -115,9 +113,10 @@ function stop(status) {
 //{0:攻击中;1:攻击成功;-1:攻击失败}
 function get_status() {
   if (attacking.value) {
+    console.log(attacking.value)
     axios({
       method: 'get',
-      url: API_URL+'/get_status/',
+      url: API_URL + '/get_status/',
     }).then((request) => {
       const dataGet = request.data
       if (dataGet['code'] === -1) {
@@ -134,9 +133,9 @@ function get_status() {
   }
 }
 
-function openPromptFunc(val){
+function openPromptFunc(val) {
   // console.log("val've been changed");
-  if(val == 1) openPrompt.value = true;
+  if (val == 1) openPrompt.value = true;
   else openPrompt.value = false;
 }
 
@@ -147,22 +146,22 @@ onMounted(() => {
 
 <template>
   <el-card class="prompt" v-show="openPrompt">
-    
+
   </el-card>
   <el-card class="container">
     摄像头实时显示:
-    
+
     <video ref="myVideo" autoplay></video>
-    
+
 
     <el-card class="body">
-      <el-button @click="shootPicture" round >
+      <el-button @click="shootPicture" round>
         拍摄照片
       </el-button>
       <br>
 
-      <el-button class="file-box" text type="primary" round >
-        <input type="file" ref="fileInput" multiple class="file-btn" required @change="fileChange" width="400rpx" />上传
+      <el-button class="file-box" text type="primary" round>
+        <input type="file" ref="fileInput" multiple class="file-btn" required @change="fileChange" width="400rpx"/>上传
       </el-button>
 
       <!--
@@ -194,52 +193,56 @@ onMounted(() => {
 <style scoped>
 
 .container {
-  
+
   display: flex;
   flex-direction: column;
   width: 700px;
   margin-left: 350px;
   height: 1900px;
 
-  
+
 }
-.body{
-  .el-button:hover{
+
+.body {
+  .el-button:hover {
     background: black;
   }
+
   display: flex;
   position: relative;
   width: 640px;
   height: 1300px;
 }
+
 .file-box {
-    display: inline-block;
-    position: relative;
-    overflow: hidden;
-    background-color: rgb(255, 255, 255);
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  background-color: rgb(255, 255, 255);
 }
- 
+
 .file-btn {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    outline: none;
-    filter: alpha(opacity=0);
-    -moz-opacity: 0;
-    -khtml-opacity: 0;
-    opacity: 0;
-    
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  outline: none;
+  filter: alpha(opacity=0);
+  -moz-opacity: 0;
+  -khtml-opacity: 0;
+  opacity: 0;
+
 }
-.prompt{
+
+.prompt {
   height: 400px;
   width: 400px;
   margin-top: 200px;
   margin-left: 500px;
   top: 0px;
   display: flex;
-  position:absolute;
+  position: absolute;
   z-index: 9999;
 }
 

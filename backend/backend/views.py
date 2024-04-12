@@ -29,7 +29,7 @@ def attack(request):
         res['code'] = -1
         res['msg'] = '攻击正在进行中'
         return JsonResponse(res)
-    elif request.method == 'POST' and request.FILES.get('image'):
+    if request.method == 'POST' and request.FILES.get('image'):
         image = request.FILES['image']
         try:
             check_dir()
@@ -77,7 +77,6 @@ def stop(request):
             if thread_id in threads:
                 threads[thread_id].stop()
                 request.session.pop('thread_id', None)
-            # 前端刷新不停止攻击问题需要解决
             else:
                 res['code'] = -1
                 res['msg'] = '攻击线程未找到'

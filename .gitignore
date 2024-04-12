@@ -4,4 +4,6 @@ backend/media
 
 backend/.idea
 
+**/__pycache__
+
 frontend/.idea
