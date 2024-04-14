@@ -116,9 +116,9 @@ onMounted(() => {
 
 <template>
   <div class="container" style="margin-left: auto;margin-right: auto">
-<!--  <el-col></el-col>-->
     <el-card class="body">
       <h3 style="margin-top: 0; margin-bottom: 0">生成后门攻击图片</h3>
+      <br>
       摄像头实时显示:
       <br>
       <video ref="myVideo" autoplay style="width: 350px"></video>
@@ -183,10 +183,10 @@ onMounted(() => {
 }
 .body {
   width: 570px;
-  height: 600px;
+  height: 630px;
   margin-left: auto;
   margin-right: auto;
-  align-content: center;
+  align-content: start;
 }
 
 .box {
@@ -220,4 +220,3 @@ onMounted(() => {
 }
 
 </style>
-@/api/backdoor.js

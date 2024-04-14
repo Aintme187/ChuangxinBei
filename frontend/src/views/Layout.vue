@@ -16,7 +16,7 @@ import {
         <!-- 左侧菜单 -->
         <el-aside width="250px">
             <div class="el-aside__logo"></div>
-            <el-menu active-text-color="#ffd04b" background-color="#232323" text-color="#fff" router>
+            <el-menu default-active="/attack/noise" active-text-color="#ffd04b" background-color="#232323" text-color="#fff" router>
                 <el-menu-item index="/attack/noise">
                     <el-icon>
                         <Promotion />
@@ -28,12 +28,6 @@ import {
                         <Promotion />
                     </el-icon>
                     <span>后门攻击</span>
-                </el-menu-item>
-                <el-menu-item index="/test">
-                    <el-icon>
-                        <Promotion />
-                    </el-icon>
-                    <span>test</span>
                 </el-menu-item>
             </el-menu>
         </el-aside>

@@ -15,6 +15,7 @@ const count = ref(0)
 const openPrompt = ref(false)
 const openPrompt1 = ref(false)
 const openPrompt2 = ref(false)
+const Flag = ref(-1)
 
 reader.onload = ((event) => {
   imageUrl.value = event.target.result
@@ -56,6 +57,13 @@ function fileChange() {
 }
 
 function attack(flag, select) {//改动了参数
+  if (flag === 1 && select === 1) {
+    Flag.value = 1;
+  }else if(flag === 1 && select === 2) {
+    Flag.value = 2;
+  }else if(flag === 0 && select === 0) {
+    Flag.value = 3;
+  }
   if (image.value) {
     const formData = new FormData()
     formData.append('image', image.value)
@@ -152,125 +160,136 @@ onMounted(() => {
 </script>
 
 <template>
-    
-  
-  <el-card class="camera">
-    <el-text style="position: relative" type="primary">摄像头实时显示:</el-text>
-    <br>
-    <br>
-    <video ref="myVideo" autoplay></video>
-  </el-card>
-  <el-card class="camera-prod">
-    <el-button @click="shootPicture" round class="shoot-picture">
-        拍摄照片
-    </el-button>
-    <br>
-    <br>
-    <canvas ref="myCanvas" style="display: none"></canvas>
-    <img v-if="imageUrl" :src="imageUrl" alt="Image">
-  </el-card>  
-    
-    
-    
-  <el-card class="container">
-    <el-card class="left-body">
-      
+  <div class="container">
+    <el-card class="body">
+      <h3 style="margin-top: 0; margin-bottom: 0">噪声还原检测与保护</h3>
       <br>
-
+      摄像头实时显示:
+      <br>
+      <video ref="myVideo" autoplay style="width: 350px"></video>
+      <br>
+      <br>
+      <el-button @click="shootPicture" round>
+          拍摄照片
+      </el-button>
       <el-button class="file-box" text type="primary" round >
         <input type="file" ref="fileInput" multiple class="file-btn" required @change="fileChange" width="400rpx" />上传
       </el-button>
-
-      <!--
-        <input type="file" ref="fileInput" @change="fileChange" />
-      -->
-
-
       <br>
-      <!--用隐形的画布来获取一帧画面-->
-      
       <br>
-      <el-button @click="attack(1,1)" @mouseover="openPromptFunc(1)" @mouseout="openPromptFunc(0)" round>检测方式1</el-button>
+      <div class="box">
+        <div class="one-third">
+          <br>
+          <el-button @click="attack(1,1)" @mouseover="openPromptFunc(1)"
+                     @mouseout="openPromptFunc(0)" size="large" color="#1eeea7" round plain style="--el-button-text-color: black">
+            检测方式1
+          </el-button>
+          <br>
+          <br>
+        </div>
+        <div class="one-third">
+          <br>
+          <el-button @click="attack(1,2)" @mouseover="openPromptFunc(2)"
+                     @mouseout="openPromptFunc(0)" size="large" color="#5bbaf6" round plain style="--el-button-text-color: black">
+            检测方式2
+          </el-button>
+          <br>
+          <br>
+        </div>
+        <div class="one-third">
+          <br>
+          <el-button @click="attack(0,0)" @mouseover="openPromptFunc(3)"
+                     @mouseout="openPromptFunc(0)" size="large" color="#d3b100" round plain style="--el-button-text-color: black">
+            混淆保护
+          </el-button>
+          <br>
+          <br>
+        </div>
+      </div>
       <br>
-      <el-button @click="attack(1,2)" @mouseover="openPromptFunc(2)" @mouseout="openPromptFunc(0)" round>检测方式2</el-button>
-      <br>
-      <el-button @click="attack(0,0)" @mouseover="openPromptFunc(3)" @mouseout="openPromptFunc(0)" round>混淆保护</el-button>
-      <br>
-      <el-button @click="stop(0)" round>停止</el-button>
-      <br>
-      <p>攻击生成图片:</p>
-      <br>
-      <img v-if="tar_image" :src="tar_image + '?' + random" alt="正在处理图片">
+      <div class="box">
+        <div class="a-half">
+          当前正在进行：
+          <el-tag v-if="Flag===1" type="success" size="large">检测方式1</el-tag>
+          <el-tag v-else-if="Flag===2" type="primary" size="large">检测方式2</el-tag>
+          <el-tag v-else-if="Flag===3" type="warning" size="large">混淆保护</el-tag>
+        </div>
+        <div class="a-half">
+          <el-button type="danger" @click="stop(0)">停止</el-button>
+        </div>
+      </div>
     </el-card>
 
+    <el-card class="body">
+      <h3 style="margin-top: 0; margin-bottom: 0">效果对比</h3>
+      <br>
+      <div class="box">
+        <div class="a-half">
+          <p>拍摄或上传的原图:</p>
+          <br>
+          <canvas ref="myCanvas" style="display: none"></canvas>
+          <img v-if="imageUrl" :src="imageUrl" alt="Image" width="200px">
+        </div>
+        <div class="a-half">
+          <p>攻击生成的图片:</p>
+          <br>
+          <img v-if="tar_image" :src="tar_image + '?' + random" alt="正在处理图片">
+        </div>
+      </div>
+    </el-card>
 
-    <el-card class="prompt" v-show="openPrompt">
-      <el-text>检测攻击1的说明书</el-text>
+    <el-card class="prompt" v-show="openPrompt" style="background-color: #1eeea7; opacity: 0.4">
+      <el-text style="color: black; font-weight: bold">检测攻击1的说明书</el-text>
     </el-card>
-    <el-card class="prompt" v-show="openPrompt1">
-      <el-text>检测攻击2的说明书</el-text>
+    <el-card class="prompt" v-show="openPrompt1" style="background-color: #5bbaf6; opacity: 0.4">
+      <el-text style="color: black; font-weight: bold">检测攻击2的说明书</el-text>
     </el-card>
-    <el-card class="prompt" v-show="openPrompt2">
-      <el-text>检测攻击3的说明书</el-text>
+    <el-card class="prompt" v-show="openPrompt2" style="background-color: #d3b100; opacity: 0.4">
+      <el-text style="color: black; font-weight: bold">混淆保护的说明书</el-text>
     </el-card>
     
-  </el-card>
+  </div>
 
 </template>
 
 <style scoped>
-.shoot-picture{
-  position: relative;
-}
-.camera{
- 
-  height:601px;
-  width: 1400px;
-  shadow:never;
-  z-index: 2; /* 设置层级为1 */
-}
-.camera-prod{
-  position:relative;
-  width: 780px;
-  height:600px;
-  margin-left: 800px;
-  margin-top: -602px;
-  padding-left: 0px;
-  z-index: 1; /* 设置层级为1 */
-}
 .container {
   position:relative;
   display: flex;
-  flex-direction: column;
-  width: 1580px;
-  
-  height: 800px;
-  
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 600px;
+}
 
-}
-.left-body{
-  .el-button:hover{
-    background: black;
-  }
-  display: flex;
+.body{
   position: relative;
-  width: 780px;
-  height: 1300px;
-  /*margin-left: 800px;*/
+  width: 570px;
+  height: 630px;
+  margin-left: auto;
+  margin-right: auto;
+  align-content: start;
 }
-.prompt{
-  height: 1000px;
-  width: 780px;
-  margin-top: 20px;
-  margin-left: 770px;
-  top: 0px;
+
+.box {
   display: flex;
-  position:absolute;
-  z-index: 9999;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
-.right-body{
-  shadow: hover;
-  width: 560px;
+.one-third{
+  width: 32%;
+}
+.a-half {
+  width: 49%;
+}
+
+.prompt{
+  height: 300px;
+  width: 570px;
+  margin-left: 39%;
+  margin-top: 22.5%;
+  display: flex;
+  position: fixed;
 }
 
 .file-box {
@@ -291,9 +310,6 @@ onMounted(() => {
     -moz-opacity: 0;
     -khtml-opacity: 0;
     opacity: 0;
-    
 }
-
-
 
 </style>
