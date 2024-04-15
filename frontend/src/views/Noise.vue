@@ -144,9 +144,9 @@ function get_status() {
 
 function openPromptFunc(val){
   console.log("val've been changed");
-  if(val == 1) openPrompt.value = true;
-  else if(val == 2) openPrompt1.value = true;
-  else if(val == 3) openPrompt2.value = true;
+  if(val === 1) openPrompt.value = true;
+  else if(val === 2) openPrompt1.value = true;
+  else if(val === 3) openPrompt2.value = true;
   else{
     openPrompt.value = false;
     openPrompt1.value = false;
@@ -182,7 +182,7 @@ onMounted(() => {
           <br>
           <el-button @click="attack(1,1)" @mouseover="openPromptFunc(1)"
                      @mouseout="openPromptFunc(0)" size="large" color="#1eeea7" round plain style="--el-button-text-color: black">
-            检测方式1
+            DLG攻击
           </el-button>
           <br>
           <br>
@@ -191,7 +191,7 @@ onMounted(() => {
           <br>
           <el-button @click="attack(1,2)" @mouseover="openPromptFunc(2)"
                      @mouseout="openPromptFunc(0)" size="large" color="#5bbaf6" round plain style="--el-button-text-color: black">
-            检测方式2
+            iDLG攻击
           </el-button>
           <br>
           <br>
@@ -200,7 +200,7 @@ onMounted(() => {
           <br>
           <el-button @click="attack(0,0)" @mouseover="openPromptFunc(3)"
                      @mouseout="openPromptFunc(0)" size="large" color="#d3b100" round plain style="--el-button-text-color: black">
-            混淆保护
+            混淆攻击
           </el-button>
           <br>
           <br>
@@ -210,9 +210,9 @@ onMounted(() => {
       <div class="box">
         <div class="a-half">
           当前正在进行：
-          <el-tag v-if="Flag===1" type="success" size="large">检测方式1</el-tag>
-          <el-tag v-else-if="Flag===2" type="primary" size="large">检测方式2</el-tag>
-          <el-tag v-else-if="Flag===3" type="warning" size="large">混淆保护</el-tag>
+          <el-tag v-if="Flag===1" type="success" size="large">DLG攻击</el-tag>
+          <el-tag v-else-if="Flag===2" type="primary" size="large">iDLG攻击</el-tag>
+          <el-tag v-else-if="Flag===3" type="warning" size="large">混淆攻击</el-tag>
         </div>
         <div class="a-half">
           <el-button type="danger" @click="stop(0)">停止</el-button>
@@ -233,19 +233,47 @@ onMounted(() => {
         <div class="a-half">
           <p>攻击生成的图片:</p>
           <br>
-          <img v-if="tar_image" :src="tar_image + '?' + random" alt="正在处理图片">
+          <img v-if="tar_image" :src="tar_image + '?' + random" alt="正在处理图片" width="200px">
         </div>
       </div>
     </el-card>
 
     <el-card class="prompt" v-show="openPrompt" style="background-color: #1eeea7; opacity: 0.4">
-      <el-text style="color: black; font-weight: bold">检测攻击1的说明书</el-text>
+      <el-text style="color: black; font-weight: bold">
+        DLG攻击 的说明书:
+        <br>
+        从摄像头拍摄图片或上传图片，点击“DLG攻击”进行模拟攻击，在右侧区域对比观察原图与生成图片。
+        <br>
+        若生成的图片不是噪声则攻击成功，所上传的图片具有被还原风险；若是噪声则攻击失败，所上传的图片无被还原风险。
+        <br>
+        <br>
+        DLG通过随机生成一组虚拟输入和虚拟标签，将这组虚拟数据输入目标模型，经过一系列正向推理和反向传播，得到这组数据对应的虚拟梯度。以最小化虚拟梯度与真实梯度之间的距离为目标，不断地优化虚拟输入和标签，经过数轮迭代，就可以获得接近真实输入与标签的数据。
+      </el-text>
     </el-card>
     <el-card class="prompt" v-show="openPrompt1" style="background-color: #5bbaf6; opacity: 0.4">
-      <el-text style="color: black; font-weight: bold">检测攻击2的说明书</el-text>
+      <el-text style="color: black; font-weight: bold">
+        iDLG攻击 的说明书:
+        <br>
+        从摄像头拍摄图片或上传图片，点击“iDLG攻击”进行模拟攻击，在右侧区域对比观察原图与生成图片。
+        <br>
+        若生成的图片不是噪声则攻击成功，所上传的图片具有被还原风险；若是噪声则攻击失败，所上传的图片无被还原风险。
+        <br>
+        <br>
+        iDLG通过分析使用one-hot标签的交叉熵损失函数关于输出值的梯度，发现输出值的梯度中标签对应位置的梯度值的正负号与其他位置的不同，而输出值的梯度又与共享梯度之间具有对应关系，由此就可以通过共享梯度之间的关系唯一地确定one-hot标签值。在此基础上，iDLG使用虚拟输入和真实标签得到虚拟梯度，同样是以最小化虚拟梯度与真实梯度之间的距离为目标，不断地优化虚拟输入。
+      </el-text>
     </el-card>
     <el-card class="prompt" v-show="openPrompt2" style="background-color: #d3b100; opacity: 0.4">
-      <el-text style="color: black; font-weight: bold">混淆保护的说明书</el-text>
+      <el-text style="color: black; font-weight: bold">
+        混淆攻击 的说明书:
+        <br>
+        从摄像头拍摄图片或上传图片，点击“混淆攻击”进行模拟攻击，在右侧区域对比观察原图与生成图片。
+        <br>
+        若生成的图片不是噪声则攻击成功，所上传的图片具有被还原风险；若是噪声则攻击失败，所上传的图片无被还原风险。
+        <br>
+<!--        我们给定两个参数α-loss_DLG和β-loss_iDLG用于平衡两种损失函数的贡献，在每次优化器每次迭代中，将DLG和iDLG的损失函数结合起来更新dummy_data和dummy_label，以达到统一高效化的检测效果。-->
+<!--        <br>-->
+        <img src="../assets/hybrid.png" width="300px"  alt="hybrid-DLG"/>
+      </el-text>
     </el-card>
     
   </div>

@@ -13,6 +13,8 @@ const test_imageUrl = ref()
 const image = ref()
 const testImg = ref()
 const tar_image = ref()
+const openPrompt = ref(false)
+const openPrompt1 = ref(false)
 const flag = ref(-1)
 
 reader.onload = ((event) => {
@@ -109,6 +111,16 @@ function backdoorTest() {
   }
 }
 
+function openPromptFunc(val){
+  console.log("val've been changed");
+  if(val === 1) openPrompt.value = true;
+  else if(val === 2) openPrompt1.value = true;
+  else{
+    openPrompt.value = false;
+    openPrompt1.value = false;
+  }
+}
+
 onMounted(() => {
   getVideo()
 })
@@ -142,7 +154,8 @@ onMounted(() => {
           <img v-if="imageUrl" :src="imageUrl" alt="Image" width="200px">
         </div>
         <div class="oneSide">
-          <el-button type="danger" icon="" @click="backdoorAttack">进行后门攻击</el-button>
+          <el-button type="danger" @click="backdoorAttack" @mouseover="openPromptFunc(1)"
+                     @mouseout="openPromptFunc(0)" round plain>进行后门攻击</el-button>
           <br>
           <br>
           <el-tag type="danger" size="small">异常图片</el-tag>
@@ -159,7 +172,8 @@ onMounted(() => {
       <br>
       <img v-if="test_imageUrl" :src="test_imageUrl" alt="test Image" width="200rpx">
       <br>
-      <el-button type="primary" @click="backdoorTest">检测</el-button>
+      <el-button type="primary" @click="backdoorTest" @mouseover="openPromptFunc(2)"
+                     @mouseout="openPromptFunc(0)" >检测</el-button>
       <br>
       <div>
         <el-text>检测结果:</el-text>
@@ -168,6 +182,31 @@ onMounted(() => {
         <el-tag v-else-if="flag===0" type="danger">异常图片</el-tag>
       </div>
       <br>
+    </el-card>
+
+    <el-card class="prompt" v-show="openPrompt" style="background-color: lightcoral; opacity: 0.4">
+      <el-text style="color: black; font-weight: bold">
+        后门攻击 的说明书:
+        <br>
+        从摄像头拍摄图片或上传图片，点击“后门攻击”进行攻击，在左侧下方区域对比观察原图与生成图片。
+        <br>
+        若生成的图片在原图基础上戴上了墨镜，即攻击成功。
+        <br>
+        <br>
+        模型训练中，后门攻击者往往会采取向训练数据中植入不易被察觉的后门，让训练数据异常化，以达到获取未授权的权限，干扰正常用户识别等目的。后门攻击不需要知道训练集和模型结构即可攻击，对人脸识别终端的安全构成了严重的威胁。
+      </el-text>
+    </el-card>
+    <el-card class="prompt" v-show="openPrompt1" style="background-color: #5bbaf6; opacity: 0.4">
+      <el-text style="color: black; font-weight: bold">
+        后门检测 的说明书:
+        <br>
+        上传待检测图片，点击“检测”进行检测，在按钮下方得到检测结果。
+        <br>
+        <br>
+        后门攻击训练数据异常检测方法：通过二分类器筛选新增样本，对于已知分布样本预测与标注结果一致率，对未知分布样本利用少样本抽检，从而评估样本可用性.
+        <br>
+        对于已知分布样本，我们所采用的二分类器是支持向量机（Support Vector Machine，SVM),对于未知分布样本，我们利用少样本抽检来评估样本可用性，根据评估指标更新优化模型，在这里我们采用准确率作为评估指标。
+      </el-text>
     </el-card>
   </div>
 </template>
@@ -196,6 +235,15 @@ onMounted(() => {
 }
 .oneSide {
   width: 49%;
+}
+
+.prompt{
+  height: 300px;
+  width: 570px;
+  margin-left: 39%;
+  margin-top: 22.5%;
+  display: flex;
+  position: fixed;
 }
 
 .file-box {

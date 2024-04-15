@@ -14,10 +14,16 @@ const routes = [
         redirect: '/attack/noise',
         children: [
             {path: '/attack/noise', component: Noise},
+        ]
+    },
+    {
+        path: '/',
+        component: LayoutVue,
+        redirect: '/attack/backdoor',
+        children: [
             {path: '/attack/backdoor', component: Backdoor}
         ]
     },
-    
 ]
 
 const router = createRouter({
