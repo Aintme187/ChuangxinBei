@@ -155,7 +155,7 @@ const clearData = () => {
 
   .bg {
     /*background: url('@/assets/DogHead.jpg') no-repeat 60% center / 240px auto,*/
-    background: url('@/assets/DogHead.jpg') no-repeat center / cover;
+    background: url('@/assets/Union.png') no-repeat center / cover;
     border-radius: 0 20px 20px 0;
   }
 

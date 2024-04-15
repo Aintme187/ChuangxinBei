@@ -6,7 +6,6 @@ import LayoutVue from '@/views/Layout.vue'
 import Noise from '@/views/Noise.vue';
 import Backdoor from "@/views/Backdoor.vue";
 import {attacking, axios, API_URL} from "@/views/global.vue";
-import {ref} from "vue";
 
 const routes = [
     {path: '/login', component: LoginVue},
@@ -23,9 +22,9 @@ const routes = [
         component: LayoutVue,
         redirect: '/attack/backdoor',
         children: [
-            {path: '/attack/backdoor', component: Backdoor},
+            {path: '/attack/backdoor', component: Backdoor}
         ]
-    }
+    },
 ]
 
 const router = createRouter({

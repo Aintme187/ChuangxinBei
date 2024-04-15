@@ -12,6 +12,9 @@ const tar_image = ref()
 const random = ref() //为tar_image添加后缀实现更新图像
 const count = ref(0)
 const openPrompt = ref(false)
+const openPrompt1 = ref(false)
+const openPrompt2 = ref(false)
+const Flag = ref(-1)
 
 reader.onload = ((event) => {
   imageUrl.value = event.target.result
@@ -53,7 +56,13 @@ function fileChange() {
 }
 
 function attack(flag, select) {//改动了参数
-  // console.log(API_URL)
+  if (flag === 1 && select === 1) {
+    Flag.value = 1;
+  }else if(flag === 1 && select === 2) {
+    Flag.value = 2;
+  }else if(flag === 0 && select === 0) {
+    Flag.value = 3;
+  }
   if (image.value) {
     const formData = new FormData()
     formData.append('image', image.value)
@@ -133,10 +142,16 @@ function get_status() {
   }
 }
 
-function openPromptFunc(val) {
-  // console.log("val've been changed");
-  if (val == 1) openPrompt.value = true;
-  else openPrompt.value = false;
+function openPromptFunc(val){
+  console.log("val've been changed");
+  if(val === 1) openPrompt.value = true;
+  else if(val === 2) openPrompt1.value = true;
+  else if(val === 3) openPrompt2.value = true;
+  else{
+    openPrompt.value = false;
+    openPrompt1.value = false;
+    openPrompt2.value = false;
+  }
 }
 
 onMounted(() => {
@@ -145,73 +160,164 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-card class="prompt" v-show="openPrompt">
-
-  </el-card>
-  <el-card class="container">
-    摄像头实时显示:
-
-    <video ref="myVideo" autoplay></video>
-
+  <div class="container">
+    <el-card class="body">
+      <h3 style="margin-top: 0; margin-bottom: 0">噪声还原检测与保护</h3>
+      <br>
+      摄像头实时显示:
+      <br>
+      <video ref="myVideo" autoplay style="width: 350px"></video>
+      <br>
+      <br>
+      <el-button @click="shootPicture" round>
+          拍摄照片
+      </el-button>
+      <el-button class="file-box" text type="primary" round >
+        <input type="file" ref="fileInput" multiple class="file-btn" required @change="fileChange" width="400rpx" />上传
+      </el-button>
+      <br>
+      <br>
+      <div class="box">
+        <div class="one-third">
+          <br>
+          <el-button @click="attack(1,1)" @mouseover="openPromptFunc(1)"
+                     @mouseout="openPromptFunc(0)" size="large" color="#1eeea7" round plain style="--el-button-text-color: black">
+            DLG攻击
+          </el-button>
+          <br>
+          <br>
+        </div>
+        <div class="one-third">
+          <br>
+          <el-button @click="attack(1,2)" @mouseover="openPromptFunc(2)"
+                     @mouseout="openPromptFunc(0)" size="large" color="#5bbaf6" round plain style="--el-button-text-color: black">
+            iDLG攻击
+          </el-button>
+          <br>
+          <br>
+        </div>
+        <div class="one-third">
+          <br>
+          <el-button @click="attack(0,0)" @mouseover="openPromptFunc(3)"
+                     @mouseout="openPromptFunc(0)" size="large" color="#d3b100" round plain style="--el-button-text-color: black">
+            混淆攻击
+          </el-button>
+          <br>
+          <br>
+        </div>
+      </div>
+      <br>
+      <div class="box">
+        <div class="a-half">
+          当前正在进行：
+          <el-tag v-if="Flag===1" type="success" size="large">DLG攻击</el-tag>
+          <el-tag v-else-if="Flag===2" type="primary" size="large">iDLG攻击</el-tag>
+          <el-tag v-else-if="Flag===3" type="warning" size="large">混淆攻击</el-tag>
+        </div>
+        <div class="a-half">
+          <el-button type="danger" @click="stop(0)">停止</el-button>
+        </div>
+      </div>
+    </el-card>
 
     <el-card class="body">
-      <el-button @click="shootPicture" round>
-        拍摄照片
-      </el-button>
+      <h3 style="margin-top: 0; margin-bottom: 0">效果对比</h3>
       <br>
-
-      <el-button class="file-box" text type="primary" round>
-        <input type="file" ref="fileInput" multiple class="file-btn" required @change="fileChange" width="400rpx"/>上传
-      </el-button>
-
-      <!--
-        <input type="file" ref="fileInput" @change="fileChange" />
-      -->
-
-
-      <br>
-      <!--用隐形的画布来获取一帧画面-->
-      <canvas ref="myCanvas" style="display: none"></canvas>
-      <img v-if="imageUrl" :src="imageUrl" alt="Image">
-      <br>
-      <el-button @click="attack(1,1)" @mouseover="openPromptFunc(1)" @mouseout="openPromptFunc(0)">检测方式1</el-button>
-      <br>
-      <el-button @click="attack(1,2)">检测方式2</el-button>
-      <br>
-      <el-button @click="attack(0,0)">混淆保护</el-button>
-      <br>
-      <el-button @click="stop(0)" round>停止</el-button>
-      <br>
-      <p>攻击生成图片:</p>
-      <br>
-      <img v-if="tar_image" :src="tar_image + '?' + random" alt="正在处理图片">
+      <div class="box">
+        <div class="a-half">
+          <p>拍摄或上传的原图:</p>
+          <br>
+          <canvas ref="myCanvas" style="display: none"></canvas>
+          <img v-if="imageUrl" :src="imageUrl" alt="Image" width="200px">
+        </div>
+        <div class="a-half">
+          <p>攻击生成的图片:</p>
+          <br>
+          <img v-if="tar_image" :src="tar_image + '?' + random" alt="正在处理图片" width="200px">
+        </div>
+      </div>
     </el-card>
-  </el-card>
+
+    <el-card class="prompt" v-show="openPrompt" style="background-color: #1eeea7; opacity: 0.4">
+      <el-text style="color: black; font-weight: bold">
+        DLG攻击 的说明书:
+        <br>
+        从摄像头拍摄图片或上传图片，点击“DLG攻击”进行模拟攻击，在右侧区域对比观察原图与生成图片。
+        <br>
+        若生成的图片不是噪声则攻击成功，所上传的图片具有被还原风险；若是噪声则攻击失败，所上传的图片无被还原风险。
+        <br>
+        <br>
+        DLG通过随机生成一组虚拟输入和虚拟标签，将这组虚拟数据输入目标模型，经过一系列正向推理和反向传播，得到这组数据对应的虚拟梯度。以最小化虚拟梯度与真实梯度之间的距离为目标，不断地优化虚拟输入和标签，经过数轮迭代，就可以获得接近真实输入与标签的数据。
+      </el-text>
+    </el-card>
+    <el-card class="prompt" v-show="openPrompt1" style="background-color: #5bbaf6; opacity: 0.4">
+      <el-text style="color: black; font-weight: bold">
+        iDLG攻击 的说明书:
+        <br>
+        从摄像头拍摄图片或上传图片，点击“iDLG攻击”进行模拟攻击，在右侧区域对比观察原图与生成图片。
+        <br>
+        若生成的图片不是噪声则攻击成功，所上传的图片具有被还原风险；若是噪声则攻击失败，所上传的图片无被还原风险。
+        <br>
+        <br>
+        iDLG通过分析使用one-hot标签的交叉熵损失函数关于输出值的梯度，发现输出值的梯度中标签对应位置的梯度值的正负号与其他位置的不同，而输出值的梯度又与共享梯度之间具有对应关系，由此就可以通过共享梯度之间的关系唯一地确定one-hot标签值。在此基础上，iDLG使用虚拟输入和真实标签得到虚拟梯度，同样是以最小化虚拟梯度与真实梯度之间的距离为目标，不断地优化虚拟输入。
+      </el-text>
+    </el-card>
+    <el-card class="prompt" v-show="openPrompt2" style="background-color: #d3b100; opacity: 0.4">
+      <el-text style="color: black; font-weight: bold">
+        混淆攻击 的说明书:
+        <br>
+        从摄像头拍摄图片或上传图片，点击“混淆攻击”进行模拟攻击，在右侧区域对比观察原图与生成图片。
+        <br>
+        若生成的图片不是噪声则攻击成功，所上传的图片具有被还原风险；若是噪声则攻击失败，所上传的图片无被还原风险。
+        <br>
+<!--        我们给定两个参数α-loss_DLG和β-loss_iDLG用于平衡两种损失函数的贡献，在每次优化器每次迭代中，将DLG和iDLG的损失函数结合起来更新dummy_data和dummy_label，以达到统一高效化的检测效果。-->
+<!--        <br>-->
+        <img src="../assets/hybrid.png" width="300px"  alt="hybrid-DLG"/>
+      </el-text>
+    </el-card>
+    
+  </div>
 
 </template>
 
 <style scoped>
-
 .container {
-
+  position:relative;
   display: flex;
-  flex-direction: column;
-  width: 700px;
-  margin-left: 350px;
-  height: 1900px;
-
-
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 600px;
 }
 
-.body {
-  .el-button:hover {
-    background: black;
-  }
-
-  display: flex;
+.body{
   position: relative;
-  width: 640px;
-  height: 1300px;
+  width: 570px;
+  height: 630px;
+  margin-left: auto;
+  margin-right: auto;
+  align-content: start;
+}
+
+.box {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.one-third{
+  width: 32%;
+}
+.a-half {
+  width: 49%;
+}
+
+.prompt{
+  height: 300px;
+  width: 570px;
+  margin-left: 39%;
+  margin-top: 22.5%;
+  display: flex;
+  position: fixed;
 }
 
 .file-box {
@@ -222,29 +328,16 @@ onMounted(() => {
 }
 
 .file-btn {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  outline: none;
-  filter: alpha(opacity=0);
-  -moz-opacity: 0;
-  -khtml-opacity: 0;
-  opacity: 0;
-
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    outline: none;
+    filter: alpha(opacity=0);
+    -moz-opacity: 0;
+    -khtml-opacity: 0;
+    opacity: 0;
 }
-
-.prompt {
-  height: 400px;
-  width: 400px;
-  margin-top: 200px;
-  margin-left: 500px;
-  top: 0px;
-  display: flex;
-  position: absolute;
-  z-index: 9999;
-}
-
 
 </style>

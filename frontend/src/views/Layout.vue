@@ -16,12 +16,12 @@ import {
         <!-- 左侧菜单 -->
         <el-aside width="250px">
             <div class="el-aside__logo"></div>
-            <el-menu active-text-color="#ffd04b" background-color="#232323" text-color="#fff" router>
-                <el-menu-item index="/attack/noise">
+            <el-menu default-active="/attack/noise" active-text-color="#ffd04b" background-color="#232323" text-color="#fff" router>
+                <el-menu-item index="/attack/noise" style="align-content: center">
                     <el-icon>
                         <Promotion />
                     </el-icon>
-                    <span>噪声检测</span>
+                    <span>噪声还原</span>
                 </el-menu-item>
                 <el-menu-item index="/attack/backdoor">
                     <el-icon>
@@ -29,15 +29,16 @@ import {
                     </el-icon>
                     <span>后门攻击</span>
                 </el-menu-item>
-                
             </el-menu>
         </el-aside>
         <!-- 右侧主区域 -->
         <el-container class="main-container">
             <!-- 头部区域 -->
             <el-header>
-                <el-text class="mx-1" size="large">创新杯</el-text>
-                <!--注意这个place属性-->
+              <el-text class="mx-1" size="large">
+                人工智能应用安全检测和保护平台
+              </el-text>
+              <!--注意这个place属性-->
                 
             </el-header>
             <!-- 中间区域 -->
@@ -63,12 +64,16 @@ import {
 
         //&是占位符，替代父样式的标签名
         &__logo {
-            height: 120px;
-            background: url('@/assets/DogHead.jpg') no-repeat center / 120px auto;
+            height: 60px;
+            background: url('@/assets/Union.png') no-repeat center / 30px auto;
         }
         //el-组件可以直接用名字当作css标签直接引用修改css样式
         .el-menu {
             border-right: none;
+            .el-menu-item {
+              align-items: center;
+              justify-content: center;
+            }
         }
     }
 
@@ -104,7 +109,6 @@ import {
             align-content: center;
             justify-content: center;
             margin-left: 1000px;
-            
         }
         .el-main{
             display: flex;
