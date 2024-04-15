@@ -171,7 +171,7 @@ onMounted(() => {
         <input type="file" ref="fileTest" multiple class="file-btn" required @change="uploadChange"/>上传检测图片
       </el-button>
       <br>
-      <img v-if="test_imageUrl" :src="test_imageUrl" alt="test Image" width="200rpx">
+      <img v-if="test_imageUrl" :src="test_imageUrl" alt="test Image" height="150px">
       <br>
       <el-button type="primary" @click="backdoorTest" @mouseover="openPromptFunc(2)"
                      @mouseout="openPromptFunc(0)" >检测</el-button>
@@ -241,10 +241,10 @@ onMounted(() => {
 }
 
 .prompt{
-  height: 300px;
+  height: 270px;
   width: 570px;
   margin-left: 39%;
-  margin-top: 22.5%;
+  margin-top: 24.5%;
   display: flex;
   position: fixed;
 }
