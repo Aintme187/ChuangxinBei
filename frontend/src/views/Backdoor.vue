@@ -113,7 +113,7 @@ function backdoorTest() {
 }
 
 function openPromptFunc(val){
-  console.log("val've been changed");
+  ;
   if(val === 1) openPrompt.value = true;
   else if(val === 2) openPrompt1.value = true;
   else{
@@ -139,10 +139,10 @@ onMounted(() => {
       <br>
       <div class="box">
         <div class="oneSide">
-          <el-button @click="shootPicture" round>
+          <el-button @click="shootPicture">
             拍摄照片
           </el-button>
-          <el-button class="file-box" text type="primary" round>
+          <el-button class="file-box" text type="primary">
             <input type="file" ref="fileInput" multiple class="file-btn" required @change="fileChange"/>上传
           </el-button>
           <!-- <input type="file" ref="fileInput" @change="fileChange" /> -->
@@ -156,7 +156,7 @@ onMounted(() => {
         </div>
         <div class="oneSide">
           <el-button type="danger" @click="backdoorAttack" @mouseover="openPromptFunc(1)"
-                     @mouseout="openPromptFunc(0)" round plain>进行后门攻击</el-button>
+                     @mouseout="openPromptFunc(0)" plain>进行后门攻击</el-button>
           <br>
           <br>
           <el-tag type="danger" size="small">异常图片</el-tag>
@@ -167,17 +167,17 @@ onMounted(() => {
 
     <el-card class="body">
       <h3>后门攻击图片检测</h3>
-      <el-button class="file-box" text type="primary" round>
+      <el-button class="file-box" text type="primary">
         <input type="file" ref="fileTest" multiple class="file-btn" required @change="uploadChange"/>上传检测图片
       </el-button>
       <br>
       <img v-if="test_imageUrl" :src="test_imageUrl" alt="test Image" height="150px">
       <br>
       <el-button type="primary" @click="backdoorTest" @mouseover="openPromptFunc(2)"
-                     @mouseout="openPromptFunc(0)" >检测</el-button>
+                     @mouseout="openPromptFunc(0)" style="margin-bottom: 8px">检测</el-button>
       <br>
       <div>
-        <el-text>检测结果:</el-text>
+        <el-text style="margin-right: 8px">检测结果:</el-text>
         <el-tag v-if="flag===-1" type="info" effect="plain">待检测</el-tag>
         <el-tag v-else-if="flag===1" type="success">正常图片</el-tag>
         <el-tag v-else-if="flag===0" type="danger">异常图片</el-tag>
@@ -224,7 +224,7 @@ onMounted(() => {
 
 .body {
   width: 570px;
-  height: 630px;
+  height: 650px;
   margin-left: auto;
   margin-right: auto;
   align-content: start;
@@ -244,7 +244,7 @@ onMounted(() => {
   height: 270px;
   width: 570px;
   margin-left: 39%;
-  margin-top: 24.5%;
+  margin-top: 25.5%;
   display: flex;
   position: fixed;
 }

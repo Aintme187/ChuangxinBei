@@ -5,7 +5,7 @@ services:
     build: 
       context: ./backend
     environment:
-      - FRONTEND_URL=http://192.168.99.100 # 加上 80 端口反而无法跨域
+      - FRONTEND_URL=http://192.168.99.100:80 # 加上 80 端口反而无法跨域
     ports:
       - "8000:8000"
 

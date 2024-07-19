@@ -143,7 +143,6 @@ function get_status() {
 }
 
 function openPromptFunc(val){
-  console.log("val've been changed");
   if(val === 1) openPrompt.value = true;
   else if(val === 2) openPrompt1.value = true;
   else if(val === 3) openPrompt2.value = true;
@@ -169,10 +168,10 @@ onMounted(() => {
       <video ref="myVideo" autoplay style="width: 350px"></video>
       <br>
       <br>
-      <el-button @click="shootPicture" round>
+      <el-button @click="shootPicture">
           拍摄照片
       </el-button>
-      <el-button class="file-box" text type="primary" round >
+      <el-button class="file-box" text type="primary">
         <input type="file" ref="fileInput" multiple class="file-btn" required @change="fileChange" width="400rpx" />上传
       </el-button>
       <br>
@@ -181,7 +180,7 @@ onMounted(() => {
         <div class="one-third">
           <br>
           <el-button @click="attack(1,1)" @mouseover="openPromptFunc(1)"
-                     @mouseout="openPromptFunc(0)" size="large" color="#1eeea7" round plain style="--el-button-text-color: black">
+                     @mouseout="openPromptFunc(0)" size="large" color="#2F64CE" plain style="--el-button-text-color: black">
             DLG攻击
           </el-button>
           <br>
@@ -190,7 +189,7 @@ onMounted(() => {
         <div class="one-third">
           <br>
           <el-button @click="attack(1,2)" @mouseover="openPromptFunc(2)"
-                     @mouseout="openPromptFunc(0)" size="large" color="#5bbaf6" round plain style="--el-button-text-color: black">
+                     @mouseout="openPromptFunc(0)" size="large" color="#7CA4F7" plain style="--el-button-text-color: black">
             iDLG攻击
           </el-button>
           <br>
@@ -199,8 +198,8 @@ onMounted(() => {
         <div class="one-third">
           <br>
           <el-button @click="attack(0,0)" @mouseover="openPromptFunc(3)"
-                     @mouseout="openPromptFunc(0)" size="large" color="#d3b100" round plain style="--el-button-text-color: black">
-            混淆攻击
+                     @mouseout="openPromptFunc(0)" size="large" color="#D3E1FC" plain style="--el-button-text-color: black">
+            差分防护
           </el-button>
           <br>
           <br>
@@ -212,7 +211,7 @@ onMounted(() => {
           当前正在进行：
           <el-tag v-if="Flag===1" type="success" size="large">DLG攻击</el-tag>
           <el-tag v-else-if="Flag===2" type="primary" size="large">iDLG攻击</el-tag>
-          <el-tag v-else-if="Flag===3" type="warning" size="large">混淆攻击</el-tag>
+          <el-tag v-else-if="Flag===3" type="warning" size="large">差分防护</el-tag>
         </div>
         <div class="a-half">
           <el-button type="danger" @click="stop(0)">停止</el-button>
@@ -238,7 +237,7 @@ onMounted(() => {
       </div>
     </el-card>
 
-    <el-card class="prompt" v-show="openPrompt" style="background-color: #1eeea7; opacity: 0.4">
+    <el-card class="prompt" v-show="openPrompt" style="background-color: #2F64CE; opacity: 0.4">
       <el-text style="color: black; font-weight: bold">
         DLG攻击 的说明书:
         <br>
@@ -250,7 +249,7 @@ onMounted(() => {
         DLG通过随机生成一组虚拟输入和虚拟标签，将这组虚拟数据输入目标模型，经过一系列正向推理和反向传播，得到这组数据对应的虚拟梯度。以最小化虚拟梯度与真实梯度之间的距离为目标，不断地优化虚拟输入和标签，经过数轮迭代，就可以获得接近真实输入与标签的数据。
       </el-text>
     </el-card>
-    <el-card class="prompt" v-show="openPrompt1" style="background-color: #5bbaf6; opacity: 0.4">
+    <el-card class="prompt" v-show="openPrompt1" style="background-color: #7CA4F7; opacity: 0.4">
       <el-text style="color: black; font-weight: bold">
         iDLG攻击 的说明书:
         <br>
@@ -262,11 +261,11 @@ onMounted(() => {
         iDLG通过分析使用one-hot标签的交叉熵损失函数关于输出值的梯度，发现输出值的梯度中标签对应位置的梯度值的正负号与其他位置的不同，而输出值的梯度又与共享梯度之间具有对应关系，由此就可以通过共享梯度之间的关系唯一地确定one-hot标签值。在此基础上，iDLG使用虚拟输入和真实标签得到虚拟梯度，同样是以最小化虚拟梯度与真实梯度之间的距离为目标，不断地优化虚拟输入。
       </el-text>
     </el-card>
-    <el-card class="prompt" v-show="openPrompt2" style="background-color: #d3b100; opacity: 0.4">
+    <el-card class="prompt" v-show="openPrompt2" style="background-color: #D3E1FC; opacity: 0.4">
       <el-text style="color: black; font-weight: bold">
-        混淆攻击 的说明书:
+        差分防护 的说明书:
         <br>
-        从摄像头拍摄图片或上传图片，点击“混淆攻击”进行模拟攻击，在右侧区域对比观察原图与生成图片。
+        从摄像头拍摄图片或上传图片，点击“差分防护”模拟添加差分后攻击，在右侧区域对比观察原图与生成图片。
         <br>
         若生成的图片不是噪声则攻击成功，所上传的图片具有被还原风险；若是噪声则攻击失败，所上传的图片无被还原风险。
         <br>
@@ -293,7 +292,7 @@ onMounted(() => {
 .body{
   position: relative;
   width: 570px;
-  height: 630px;
+  height: 650px;
   margin-left: auto;
   margin-right: auto;
   align-content: start;
@@ -315,7 +314,7 @@ onMounted(() => {
   height: 300px;
   width: 570px;
   margin-left: 39%;
-  margin-top: 22.5%;
+  margin-top: 23.5%;
   display: flex;
   position: fixed;
 }
